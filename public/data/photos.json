@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "src": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&q=80",
+    "alt": "Beautiful moment",
+    "title": "A Special Day",
+    "date": "2020",
+    "category": "Family",
+    "year": 2020
+  },
+  {
+    "id": 2,
+    "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
+    "alt": "Cherished memory",
+    "title": "Family Time",
+    "date": "2020",
+    "category": "Family",
+    "year": 2020
+  },
+  {
+    "id": 3,
+    "src": "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80",
+    "alt": "Joyful moment",
+    "title": "Celebration",
+    "date": "2019",
+    "category": "Celebration",
+    "year": 2019
+  },
+  {
+    "id": 4,
+    "src": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&q=80",
+    "alt": "Beautiful smile",
+    "title": "Happy Times",
+    "date": "2019",
+    "category": "Family",
+    "year": 2019
+  },
+  {
+    "id": 5,
+    "src": "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800&q=80",
+    "alt": "Special occasion",
+    "title": "Memorable Event",
+    "date": "2018",
+    "category": "Celebration",
+    "year": 2018
+  },
+  {
+    "id": 6,
+    "src": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80",
+    "alt": "Beautiful memory",
+    "title": "Together",
+    "date": "2018",
+    "category": "Family",
+    "year": 2018
+  },
+  {
+    "id": 7,
+    "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80",
+    "alt": "Precious moment",
+    "title": "Love",
+    "date": "2017",
+    "category": "Family",
+    "year": 2017
+  },
+  {
+    "id": 8,
+    "src": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80",
+    "alt": "Cherished time",
+    "title": "Adventures",
+    "date": "2017",
+    "category": "Adventure",
+    "year": 2017
+  },
+  {
+    "id": 9,
+    "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+    "alt": "Beautiful day",
+    "title": "Sunshine",
+    "date": "2016",
+    "category": "Adventure",
+    "year": 2016
+  },
+  {
+    "id": 10,
+    "src": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800&q=80",
+    "alt": "Precious memory",
+    "title": "Forever",
+    "date": "2016",
+    "category": "Family",
+    "year": 2016
+  }
+]

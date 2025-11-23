@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "Beautiful Memories",
+    "description": "A collection of precious moments",
+    "thumbnail": "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=800&q=80",
+    "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    "date": "2020",
+    "category": "Family",
+    "year": 2020
+  },
+  {
+    "id": 2,
+    "title": "Family Moments",
+    "description": "Time spent together",
+    "thumbnail": "https://images.unsplash.com/photo-1517849845537-4d58f9986e42?w=800&q=80",
+    "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    "date": "2019",
+    "category": "Family",
+    "year": 2019
+  },
+  {
+    "id": 3,
+    "title": "Celebrations",
+    "description": "Joyful times",
+    "thumbnail": "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&q=80",
+    "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    "date": "2018",
+    "category": "Celebration",
+    "year": 2018
+  }
+]

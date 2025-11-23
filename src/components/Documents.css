@@ -1,0 +1,131 @@
+.documents {
+  width: 100%;
+}
+
+.documents-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.document-card {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.document-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.document-icon {
+  font-size: 3rem;
+  flex-shrink: 0;
+}
+
+.document-content {
+  flex: 1;
+}
+
+.document-title {
+  font-size: 1.2rem;
+  color: #8b7a9e;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.document-description {
+  color: #7a6a8a;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.document-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.document-type {
+  background: linear-gradient(135deg, #e8d5e8 0%, #d4b8d4 100%);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.document-date {
+  background: #f0e8f5;
+  color: #8b7a9e;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+}
+
+.download-doc-button {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #e8d5e8 0%, #d4b8d4 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.download-doc-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(232, 213, 232, 0.4);
+}
+
+.documents-note {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  border-left: 4px solid #d4b8d4;
+}
+
+.documents-note p {
+  color: #7a6a8a;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #9b8ba8;
+}
+
+@media (min-width: 768px) {
+  .documents-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .document-card {
+    padding: 2rem;
+  }
+  
+  .document-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .documents-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
