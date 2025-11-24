@@ -1,17 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { existsSync } from 'fs'
-import { resolve } from 'path'
 
-// Check if CNAME file exists (indicates custom domain is configured)
-// CNAME file can be in root or public folder
-const hasCustomDomain = existsSync(resolve(__dirname, 'public/CNAME')) || 
-                        existsSync(resolve(__dirname, 'CNAME'))
-
+// IMPORTANT: When using a custom domain with GitHub Pages:
+// - Custom domain serves from root (/)
+// - GitHub URL redirects to custom domain automatically
+// So we always build with root base path when custom domain is intended
+// Use environment variable to control this
 export default defineConfig({
   plugins: [react()],
-  // Use root path for custom domain, repository path for GitHub Pages URL
-  base: hasCustomDomain ? '/' : '/gabriellas-website/',
+  // Always use root path - GitHub Pages will handle redirects
+  // When custom domain is configured, it serves from root
+  // When GitHub URL is used, GitHub redirects to custom domain
+  base: '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
