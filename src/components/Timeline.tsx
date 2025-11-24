@@ -22,10 +22,12 @@ function Timeline() {
 
   // Load all data from JSON files
   useEffect(() => {
+    // Use import.meta.env.BASE_URL to handle base path correctly
+    const baseUrl = import.meta.env.BASE_URL
     Promise.all([
-      fetch('/data/photos.json').then(res => res.json()).catch(() => []),
-      fetch('/data/videos.json').then(res => res.json()).catch(() => []),
-      fetch('/data/documents.json').then(res => res.json()).catch(() => [])
+      fetch(`${baseUrl}data/photos.json`).then(res => res.json()).catch(() => []),
+      fetch(`${baseUrl}data/videos.json`).then(res => res.json()).catch(() => []),
+      fetch(`${baseUrl}data/documents.json`).then(res => res.json()).catch(() => [])
     ]).then(([photosData, videosData, documentsData]) => {
       setPhotos(photosData)
       setVideos(videosData)

@@ -19,7 +19,8 @@ function Documents() {
 
   // Load documents from JSON file on component mount
   useEffect(() => {
-    fetch('/data/documents.json')
+    // Use import.meta.env.BASE_URL to handle base path correctly
+    fetch(`${import.meta.env.BASE_URL}data/documents.json`)
       .then(res => res.json())
       .then(data => {
         setDocumentsData(data)

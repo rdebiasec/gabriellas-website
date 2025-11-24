@@ -20,7 +20,8 @@ function VideoGallery() {
 
   // Load videos from JSON file on component mount
   useEffect(() => {
-    fetch('/data/videos.json')
+    // Use import.meta.env.BASE_URL to handle base path correctly
+    fetch(`${import.meta.env.BASE_URL}data/videos.json`)
       .then(res => res.json())
       .then(data => {
         setVideosData(data)

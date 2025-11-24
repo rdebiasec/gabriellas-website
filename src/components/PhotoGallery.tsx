@@ -24,7 +24,8 @@ function PhotoGallery() {
 
   // Load photos from JSON file on component mount
   useEffect(() => {
-    fetch('/data/photos.json')
+    // Use import.meta.env.BASE_URL to handle base path correctly
+    fetch(`${import.meta.env.BASE_URL}data/photos.json`)
       .then(res => res.json())
       .then(data => {
         setPhotosData(data)
