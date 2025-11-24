@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// IMPORTANT: When using a custom domain with GitHub Pages:
+// PERMANENT FIX: Base path configuration
+// When custom domain is configured in GitHub Pages:
 // - Custom domain serves from root (/)
-// - GitHub URL redirects to custom domain automatically
-// So we always build with root base path when custom domain is intended
-// Use environment variable to control this
+// - GitHub URL automatically redirects to custom domain
+// So we always build with root path when custom domain is intended
+// 
+// IMPORTANT: If you remove custom domain, you'll need to change this back to '/gabriellas-website/'
+// But since GitHub redirects GitHub URL to custom domain anyway, root path works for both
 export default defineConfig({
   plugins: [react()],
-  // Always use root path - GitHub Pages will handle redirects
-  // When custom domain is configured, it serves from root
-  // When GitHub URL is used, GitHub redirects to custom domain
+  // Always use root path - works for custom domain
+  // GitHub URL will redirect to custom domain automatically
   base: '/',
   build: {
     outDir: 'dist',
