@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './Hero.css'
+import MonarchField from './MonarchField'
 
 type MediaCounts = {
   photos: number
@@ -96,6 +97,7 @@ function Hero({ onNavigate }: HeroProps) {
 
   return (
     <section className="hero">
+      <MonarchField />
       <div className="hero-media-layer">
         <div className="hero-image">
           <img src={heroImage} alt="Gabriella smiling outdoors" loading="lazy" />

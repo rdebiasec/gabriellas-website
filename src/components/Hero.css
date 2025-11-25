@@ -7,6 +7,8 @@
   background: #f7c4e3;
   border: 1px solid rgba(128, 97, 170, 0.25);
   box-shadow: 0 26px 55px rgba(126, 93, 167, 0.3);
+  position: relative;
+  isolation: isolate;
 }
 
 .hero-media-layer {
