@@ -88,5 +88,95 @@
     "date": "2016",
     "category": "Family",
     "year": 2016
+  },
+  {
+    "id": 11,
+    "src": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80",
+    "alt": "Laughing friends outdoors",
+    "title": "Park Laughs",
+    "date": "2015",
+    "category": "Friends",
+    "year": 2015
+  },
+  {
+    "id": 12,
+    "src": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=80",
+    "alt": "City sunset skyline",
+    "title": "Golden Hour Stroll",
+    "date": "2015",
+    "category": "Adventure",
+    "year": 2015
+  },
+  {
+    "id": 13,
+    "src": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
+    "alt": "Sitting in tall grass",
+    "title": "Wildflower Field",
+    "date": "2014",
+    "category": "Nature",
+    "year": 2014
+  },
+  {
+    "id": 14,
+    "src": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80",
+    "alt": "Sparkler celebration at dusk",
+    "title": "Summer Celebration",
+    "date": "2014",
+    "category": "Celebration",
+    "year": 2014
+  },
+  {
+    "id": 15,
+    "src": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
+    "alt": "Reading a book at cafe",
+    "title": "Cozy Afternoon",
+    "date": "2013",
+    "category": "Quiet Moments",
+    "year": 2013
+  },
+  {
+    "id": 16,
+    "src": "https://images.unsplash.com/photo-1500048993953-d23a436266cf?w=800&q=80",
+    "alt": "Colorful confetti toss",
+    "title": "Birthday Joy",
+    "date": "2013",
+    "category": "Celebration",
+    "year": 2013
+  },
+  {
+    "id": 17,
+    "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80",
+    "alt": "Walking near ocean cliffs",
+    "title": "Coastal Breeze",
+    "date": "2012",
+    "category": "Adventure",
+    "year": 2012
+  },
+  {
+    "id": 18,
+    "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80",
+    "alt": "Portrait with joyful smile",
+    "title": "Pure Joy",
+    "date": "2012",
+    "category": "Portrait",
+    "year": 2012
+  },
+  {
+    "id": 19,
+    "src": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
+    "alt": "Hiking through forest",
+    "title": "Trail Adventure",
+    "date": "2011",
+    "category": "Nature",
+    "year": 2011
+  },
+  {
+    "id": 20,
+    "src": "https://images.unsplash.com/photo-1506089676908-3592f7389d4d?w=800&q=80",
+    "alt": "Playing guitar outdoors",
+    "title": "Songs at Dusk",
+    "date": "2011",
+    "category": "Music",
+    "year": 2011
   }
 ]

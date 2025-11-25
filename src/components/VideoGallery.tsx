@@ -55,15 +55,18 @@ function VideoGallery() {
   }
 
   const handleFullscreen = (videoId: number) => {
-    const videoElement = document.getElementById(`video-${videoId}`) as HTMLVideoElement
-    if (videoElement) {
-      if (videoElement.requestFullscreen) {
-        videoElement.requestFullscreen()
-      } else if ((videoElement as any).webkitRequestFullscreen) {
-        (videoElement as any).webkitRequestFullscreen()
-      } else if ((videoElement as any).mozRequestFullScreen) {
-        (videoElement as any).mozRequestFullScreen()
-      }
+    const element = document.getElementById(`video-${videoId}`) as (HTMLVideoElement & {
+      webkitRequestFullscreen?: () => Promise<void> | void
+      mozRequestFullScreen?: () => Promise<void> | void
+    }) | null
+    if (!element) return
+
+    if (element.requestFullscreen) {
+      element.requestFullscreen()
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen()
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen()
     }
   }
 

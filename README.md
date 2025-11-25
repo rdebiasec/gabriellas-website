@@ -1,6 +1,6 @@
 # In Memory of Gabriella
 
-A beautiful, modern memorial website to preserve and share memories of Gabriella. This site features a mobile-first design with soft pastel colors, organized galleries for photos, videos, and documents, with timeline view, search functionality, and download capabilities.
+A beautiful, modern memorial website to preserve and share memories of Gabriella. The site features a mobile-first design with soft pastel colors, organized galleries for photos and videos, an interactive wall for heartfelt notes, and Gaby’s Book for long-form tributes.
 
 ## Features
 
@@ -8,11 +8,12 @@ A beautiful, modern memorial website to preserve and share memories of Gabriella
 - 📱 **Mobile-First** - Responsive design that works perfectly on all devices
 - 📷 **Photo Gallery** - Browse photos with lightbox, slideshow, and download options
 - 🎥 **Video Gallery** - Watch videos with fullscreen and download support
-- 📄 **Documents Section** - Organized repository of important documents
+- 💌 **Gaby's Wall** - Collect short, public notes to Gabriella with exportable JSON backups
+- 📚 **Gaby's Book** - Warm message from Jimena Cortes with a link to the upcoming book launch
 - ⏱️ **Timeline View** - Chronological organization of all memories
 - 🔍 **Search Functionality** - Search across all content
 - 🏷️ **Categories** - Filter content by category
-- ⬇️ **Download Options** - Download photos, videos, and documents
+- ⬇️ **Download Options** - Download photos and videos directly
 - 🎞️ **Slideshow** - Automatic slideshow for photos
 - 🖼️ **Fullscreen Viewing** - Full-screen lightbox for photos and videos
 
@@ -62,11 +63,8 @@ The built files will be in the `dist` folder.
 
 ### Adding Photos
 
-1. Add your photos to the `public/photos/` folder
-2. Update `src/components/PhotoGallery.tsx`:
-   - Replace the demo `photos` array with your actual photos
-   - Update the `src` paths to point to your photos
-   - Add titles, dates, categories, and years
+1. Place your photo files in `public/photos/`
+2. Update `public/data/photos.json` with entries that describe each photo (title, date, category, etc.)
 
 Example:
 ```typescript
@@ -83,17 +81,16 @@ Example:
 
 ### Adding Videos
 
-1. Add your videos to the `public/videos/` folder
-2. Update `src/components/VideoGallery.tsx`:
-   - Replace the demo `videos` array with your actual videos
-   - Update the `videoUrl` paths to point to your videos
+1. Place your MP4 files in `public/videos/` (and optional thumbnails in `public/videos/thumbnails/`)
+2. Update `public/data/videos.json` with the metadata for each video
 
-### Adding Documents
+### Adding Wall Entries
 
-1. Add your documents (PDFs, images, etc.) to the `public/documents/` folder
-2. Update `src/components/Documents.tsx`:
-   - Replace the demo `documents` array with your actual documents
-   - Update the `fileUrl` paths to point to your documents
+- **Wall (`public/data/wall.json`)**: List of short notes containing `fullName`, `message`, and `createdAt`. The UI lets visitors submit messages locally and download a JSON backup to keep the repository in sync.
+
+### Gaby's Book Announcement
+
+- The book page is a static announcement authored by Jimena Cortes with a button that will link to the published book on February 23. Update the link in `GabysBook.tsx` once the book is live.
 
 ## Deployment to GitHub Pages
 
@@ -117,6 +114,16 @@ npm run build
 ```typescript
 base: '/your-repo-name/'
 ```
+
+### Automated Push Script
+
+To streamline daily deployments, use the helper script in `scripts/push.sh`:
+
+1. Make it executable (one-time): `chmod +x scripts/push.sh`
+2. Run `./scripts/push.sh`
+3. When prompted, provide your commit message and Personal Access Token (PAT). The script stages all changes, creates the commit, and pushes `HEAD` to `main` on `https://github.com/rdebiasec/gabriellas-website`.
+
+The PAT is requested every run and isn’t stored anywhere in the repository. Because you paste the token into the terminal, consider clearing your shell history if you share the machine.
 
 ## Security Best Practices
 
@@ -148,19 +155,26 @@ Categories are automatically generated from your content. To add predefined cate
 
 ```
 gabriella-memorial/
-├── public/              # Static assets (photos, videos, documents)
+├── public/
+│   ├── photos/                # Photo assets
+│   ├── videos/                # Video assets + thumbnails
+│   └── data/
+│       ├── photos.json        # Photo metadata
+│       ├── videos.json        # Video metadata
+│       └── wall.json          # Seed entries for Gaby's Wall
 ├── src/
-│   ├── components/     # React components
+│   ├── components/
+│   │   ├── GabysWall.tsx
+│   │   ├── GabysBook.tsx
 │   │   ├── Hero.tsx
 │   │   ├── PhotoGallery.tsx
 │   │   ├── VideoGallery.tsx
-│   │   ├── Documents.tsx
 │   │   └── Timeline.tsx
-│   ├── App.tsx         # Main app component
-│   ├── App.css         # Main styles
-│   └── main.tsx        # Entry point
+│   ├── App.tsx
+│   ├── App.css
+│   └── main.tsx
 ├── .github/
-│   └── workflows/      # GitHub Actions for deployment
+│   └── workflows/
 └── package.json
 ```
 

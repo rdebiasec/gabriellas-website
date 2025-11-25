@@ -3,7 +3,7 @@ import './Timeline.css'
 
 interface TimelineItem {
   id: number
-  type: 'photo' | 'video' | 'document'
+  type: 'photo' | 'video'
   title: string
   date: string
   year: number
@@ -13,10 +13,28 @@ interface TimelineItem {
   category: string
 }
 
+type PhotoEntry = {
+  id: number
+  title: string
+  date?: string
+  year: number
+  category: string
+  alt?: string
+  src?: string
+}
+
+type VideoEntry = {
+  id: number
+  title: string
+  description?: string
+  date?: string
+  year: number
+  category: string
+}
+
 function Timeline() {
-  const [photos, setPhotos] = useState<any[]>([])
-  const [videos, setVideos] = useState<any[]>([])
-  const [documents, setDocuments] = useState<any[]>([])
+  const [photos, setPhotos] = useState<PhotoEntry[]>([])
+  const [videos, setVideos] = useState<VideoEntry[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
@@ -25,13 +43,15 @@ function Timeline() {
     // Use import.meta.env.BASE_URL to handle base path correctly
     const baseUrl = import.meta.env.BASE_URL
     Promise.all([
-      fetch(`${baseUrl}data/photos.json`).then(res => res.json()).catch(() => []),
-      fetch(`${baseUrl}data/videos.json`).then(res => res.json()).catch(() => []),
-      fetch(`${baseUrl}data/documents.json`).then(res => res.json()).catch(() => [])
-    ]).then(([photosData, videosData, documentsData]) => {
-      setPhotos(photosData)
-      setVideos(videosData)
-      setDocuments(documentsData)
+      fetch(`${baseUrl}data/photos.json`)
+        .then(res => res.json() as Promise<PhotoEntry[]>)
+        .catch(() => [] as PhotoEntry[]),
+      fetch(`${baseUrl}data/videos.json`)
+        .then(res => res.json() as Promise<VideoEntry[]>)
+        .catch(() => [] as VideoEntry[]),
+    ]).then(([photosData, videosData]) => {
+      setPhotos(Array.isArray(photosData) ? photosData : [])
+      setVideos(Array.isArray(videosData) ? videosData : [])
     })
   }, [])
 
@@ -57,20 +77,10 @@ function Timeline() {
         month: 6,
         description: video.description,
         category: video.category
-      })),
-      ...documents.map(doc => ({
-        id: doc.id + 200,
-        type: 'document' as const,
-        title: doc.title,
-        date: doc.date || '',
-        year: parseInt(doc.date) || 2020,
-        month: 1,
-        description: doc.description,
-        category: doc.category
       }))
     ]
     return items
-  }, [photos, videos, documents])
+  }, [photos, videos])
 
   const categories = useMemo(() => {
     return ['All', ...Array.from(new Set(timelineItems.map(item => item.category)))]
@@ -103,10 +113,12 @@ function Timeline() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'photo': return '📷'
-      case 'video': return '🎥'
-      case 'document': return '📄'
-      default: return '📌'
+      case 'photo':
+        return '📷'
+      case 'video':
+        return '🎥'
+      default:
+        return '📌'
     }
   }
 

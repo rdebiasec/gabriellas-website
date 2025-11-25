@@ -1,3 +1,8 @@
+# GitHub Actions Workflow File Content
+
+Copy this entire content and paste it into `.github/workflows/deploy.yml` on GitHub:
+
+```yaml
 name: Deploy to GitHub Pages
 
 on:
@@ -31,22 +36,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Check for custom domain
-        id: check_domain
-        run: |
-          if [ -f "CNAME" ] || [ -f "public/CNAME" ]; then
-            echo "has_custom_domain=true" >> $GITHUB_OUTPUT
-            echo "base_path=/" >> $GITHUB_OUTPUT
-          else
-            echo "has_custom_domain=false" >> $GITHUB_OUTPUT
-            echo "base_path=/gabriellas-website/" >> $GITHUB_OUTPUT
-          fi
-      
       - name: Build
         run: npm run build
         env:
           NODE_ENV: production
-          VITE_BASE_PATH: ${{ steps.check_domain.outputs.base_path }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -66,3 +59,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+```
+
+## Steps to Add via GitHub Web Interface:
+
+1. Go to: https://github.com/rdebiasec/gabriellas-website
+2. Click **"Add file"** → **"Create new file"**
+3. In the file path box, type: `.github/workflows/deploy.yml`
+4. Paste the YAML content above
+5. Scroll down and click **"Commit new file"**
+6. The workflow will automatically run and deploy your site!
+

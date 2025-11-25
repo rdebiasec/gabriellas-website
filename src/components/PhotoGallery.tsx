@@ -90,26 +90,28 @@ function PhotoGallery() {
       </p>
 
       <div className="gallery-controls">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search photos..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        <div className="row">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search photos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
 
-        <div className="category-filters">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+          <div className="category-filters">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {filteredPhotos.length > 0 && (

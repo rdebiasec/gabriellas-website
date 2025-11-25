@@ -18,19 +18,16 @@
 ## 📝 Adding Your Real Content
 
 ### Photos
-1. Create folder: `public/photos/`
-2. Add your photos there
-3. Edit `src/components/PhotoGallery.tsx` - replace the `photos` array with your photos
+1. Add files to `public/photos/`
+2. Update `public/data/photos.json` with entries that point to each file
 
 ### Videos
-1. Create folder: `public/videos/`
-2. Add your videos there
-3. Edit `src/components/VideoGallery.tsx` - replace the `videos` array with your videos
+1. Add MP4 files to `public/videos/` (and thumbnails to `public/videos/thumbnails/`)
+2. Update `public/data/videos.json` with the proper metadata
 
-### Documents
-1. Create folder: `public/documents/`
-2. Add your documents there
-3. Edit `src/components/Documents.tsx` - replace the `documents` array with your documents
+### Gaby's Wall & Book
+- Edit `public/data/wall.json` to keep a permanent copy of short notes
+- Gaby's Book is a static announcement from Jimena Cortes. Update the link in `GabysBook.tsx` once the book is published (planned for February 23).
 
 ## 🌐 Deploying to GitHub Pages
 
@@ -62,7 +59,8 @@ Your site will be available at:
 ✅ Mobile-first responsive design
 ✅ Photo gallery with lightbox
 ✅ Video gallery with fullscreen
-✅ Documents section
+✅ Gaby's Wall for public notes
+✅ Gaby's Book for long-form tributes
 ✅ Timeline view
 ✅ Search functionality
 ✅ Category filtering
@@ -86,4 +84,5 @@ Your site will be available at:
 ---
 
 Need help? Check the main README.md for more detailed information.
+
 

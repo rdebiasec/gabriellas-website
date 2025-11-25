@@ -1,0 +1,21 @@
+[
+  {
+    "id": "seed-wall-1",
+    "fullName": "Isabella & Roberto",
+    "message": "Your laughter still dances through every corner of our home. We celebrate you every day.",
+    "createdAt": "2024-05-18T10:00:00.000Z"
+  },
+  {
+    "id": "seed-wall-2",
+    "fullName": "Tía Camila",
+    "message": "Gaby, you taught us how to sparkle with kindness. I leave a note of gratitude on your wall tonight.",
+    "createdAt": "2024-07-02T12:30:00.000Z"
+  },
+  {
+    "id": "seed-wall-3",
+    "fullName": "Luca (Brother)",
+    "message": "I still chase butterflies the way you showed me. Thank you for being my best friend forever.",
+    "createdAt": "2024-09-14T18:20:00.000Z"
+  }
+]
+
