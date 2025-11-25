@@ -61,11 +61,10 @@ fi
 git add -A
 
 if git diff --cached --quiet; then
-  echo "ℹ️  No changes staged for commit. Exiting without pushing."
-  exit 0
+  echo "ℹ️  No changes staged. Skipping commit but will still push."
+else
+  git commit -m "$COMMIT_MESSAGE"
 fi
-
-git commit -m "$COMMIT_MESSAGE"
 
 REPO_URL="https://github.com/rdebiasec/gabriellas-website.git"
 AUTH_REPO_URL="https://${GITHUB_PAT}@github.com/rdebiasec/gabriellas-website.git"
