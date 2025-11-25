@@ -114,7 +114,7 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p>Forever in our hearts ❤️</p>
+          <p className="footer-message">Forever in our hearts ❤️</p>
         </footer>
       </div>
 

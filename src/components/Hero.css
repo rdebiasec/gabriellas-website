@@ -2,16 +2,16 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.4rem;
-  padding: 2rem;
-  border-radius: 30px;
+  padding: 1.6rem;
+  border-radius: 24px;
   background: #f7c4e3;
   border: 1px solid rgba(128, 97, 170, 0.25);
   box-shadow: 0 26px 55px rgba(126, 93, 167, 0.3);
 }
 
 .hero-media-layer {
-  padding: 1.25rem;
-  border-radius: 26px;
+  padding: 1rem;
+  border-radius: 22px;
   background: #f7e8f6 url('/images/butterflies.png');
   background-size: 260px;
   background-repeat: repeat;
@@ -22,10 +22,10 @@
 
 .hero-image {
   position: relative;
-  width: min(100%, 280px);
-  min-height: 200px;
+  width: min(100%, 230px);
+  min-height: 170px;
   margin: 0 auto;
-  border-radius: 20px 80px 50px 20px;
+  border-radius: 18px 70px 45px 18px;
   overflow: hidden;
   box-shadow: 0 20px 45px rgba(146, 120, 214, 0.35);
 }
@@ -54,9 +54,9 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: 1.4rem;
-  border-radius: 24px;
+  gap: 0.6rem;
+  padding: 1.15rem;
+  border-radius: 22px;
   background: linear-gradient(140deg, rgba(251, 233, 246, 0.96), rgba(233, 200, 255, 0.92));
   border: 1px solid rgba(128, 97, 170, 0.25);
   box-shadow: 0 18px 40px rgba(128, 97, 170, 0.2);
