@@ -117,10 +117,10 @@ base: '/your-repo-name/'
 
 ### Automated Push Script
 
-To streamline daily deployments, use the helper script in `scripts/push.sh`:
+To streamline daily deployments, use the helper script `push.sh` (repo root):
 
-1. Make it executable (one-time): `chmod +x scripts/push.sh`
-2. Run `./scripts/push.sh`
+1. Make it executable (one-time): `chmod +x push.sh`
+2. Run `./push.sh`
    - Optional flags: `-m "Commit message"` and `-t "YOUR_PAT"` let you pass the values inline (otherwise the script will prompt interactively).
 3. The script stages all changes, creates the commit, and pushes `HEAD` to `main` on `https://github.com/rdebiasec/gabriellas-website`.
 
