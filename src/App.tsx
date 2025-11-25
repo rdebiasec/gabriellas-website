@@ -16,8 +16,8 @@ function App() {
     { id: 'timeline', label: 'Timeline' },
     { id: 'photos', label: 'Photos' },
     { id: 'videos', label: 'Videos' },
-    { id: 'wall', label: "Gaby's Wall" },
-    { id: 'book', label: "Gaby's Book" },
+    { id: 'wall', label: 'Wall' },
+    { id: 'book', label: 'Book' },
   ]
 
   const [activeTab, setActiveTab] = useState<Tab>('home')
@@ -61,7 +61,7 @@ function App() {
           <div className="header-inner">
             <div className="brand">
               <span className="brand-pill">Celebrating Gabriella</span>
-              <h1 className="site-title">In Memory of Gabriella</h1>
+              <h1 className="site-title">Gaby&apos;s Website</h1>
             </div>
             <nav className="nav desktop-nav">
               {navItems.map((item) => (

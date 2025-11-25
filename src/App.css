@@ -52,6 +52,35 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  padding: 0.85rem 1.3rem;
+  border-radius: 26px;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 80% 0%, rgba(255, 215, 255, 0.4), transparent 45%),
+    linear-gradient(135deg, #fbdbff, #d9c2ff);
+  border: 2px solid rgba(70, 28, 96, 0.4);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 18px 34px rgba(74, 31, 99, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(60deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 80%);
+  transform: rotate(15deg);
+  animation: brandSheen 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes brandSheen {
+  0% {
+    transform: translateX(-20%) rotate(15deg);
+  }
+  100% {
+    transform: translateX(120%) rotate(15deg);
+  }
 }
 
 .brand-pill {
@@ -72,6 +101,14 @@
   letter-spacing: 0.12em;
   margin: 0;
   text-transform: uppercase;
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: radial-gradient(circle at 15% 30%, rgba(255, 255, 255, 0.35), transparent 40%),
+    linear-gradient(135deg, #f3c5ff, #cfb0ff);
+  border: 2px solid rgba(70, 28, 96, 0.35);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 16px 30px rgba(74, 31, 99, 0.2);
 }
 
 .nav {
@@ -114,11 +151,13 @@
   display: inline-flex;
   flex-direction: column;
   gap: 6px;
-  width: 56px;
-  height: 56px;
+  width: 62px;
+  height: 62px;
+  position: relative;
+  overflow: hidden;
   border-radius: 18px;
-  border: 1px solid rgba(139, 116, 195, 0.35);
-  background: linear-gradient(145deg, #ffe0ef, #f4c1ec);
+  border: 1px solid rgba(58, 22, 81, 0.45);
+  background: linear-gradient(145deg, #7f4ea7, #4d1f68);
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -131,12 +170,24 @@
   width: 26px;
   height: 3px;
   border-radius: 999px;
-  background: #6d4c9a;
+  background: #f2dffb;
   box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.4) inset;
 }
 
+.hamburger::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/images/butterflies.png');
+  background-size: 240px;
+  background-repeat: repeat;
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .hamburger:hover {
-  border-color: rgba(186, 145, 255, 0.7);
+  border-color: rgba(255, 196, 255, 0.7);
   transform: translateY(-2px);
 }
 

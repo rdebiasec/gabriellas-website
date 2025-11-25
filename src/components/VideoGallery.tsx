@@ -133,9 +133,9 @@ function VideoGallery() {
                       onClick={() => setPlayingVideo(video.id)}
                       aria-label={`Play ${video.title}`}
                     >
-                      <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-                        <circle cx="32" cy="32" r="32" fill="rgba(255, 255, 255, 0.9)"/>
-                        <path d="M24 20L44 32L24 44V20Z" fill="#8b7a9e"/>
+                    <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+                      <circle cx="32" cy="32" r="32" fill="rgba(142, 97, 171, 0.9)"/>
+                      <path d="M24 20L44 32L24 44V20Z" fill="#f5e6ff"/>
                       </svg>
                     </button>
                   </>
@@ -143,7 +143,6 @@ function VideoGallery() {
               </div>
               <div className="video-info">
                 <h3 className="video-title">{video.title}</h3>
-                <p className="video-description">{video.description}</p>
                 <div className="video-meta">
                   {video.date && <span className="video-date">{video.date}</span>}
                   <span className="video-category">{video.category}</span>

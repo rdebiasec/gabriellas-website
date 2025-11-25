@@ -30,6 +30,7 @@ type VideoEntry = {
   date?: string
   year: number
   category: string
+  thumbnail?: string
 }
 
 function Timeline() {
@@ -37,6 +38,13 @@ function Timeline() {
   const [videos, setVideos] = useState<VideoEntry[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+
+  const resolveAssetUrl = (path?: string) => {
+    if (!path) return undefined
+    if (/^https?:\/\//i.test(path)) return path
+    const normalized = path.startsWith('/') ? path.slice(1) : path
+    return `${import.meta.env.BASE_URL}${normalized}`
+  }
 
   // Load all data from JSON files
   useEffect(() => {
@@ -65,7 +73,7 @@ function Timeline() {
         year: photo.year,
         month: 6, // Default month - you can add month to JSON if needed
         description: photo.alt,
-        thumbnail: photo.src,
+        thumbnail: resolveAssetUrl(photo.src),
         category: photo.category
       })),
       ...videos.map(video => ({
@@ -76,6 +84,7 @@ function Timeline() {
         year: video.year,
         month: 6,
         description: video.description,
+        thumbnail: resolveAssetUrl(video.thumbnail),
         category: video.category
       }))
     ]
@@ -173,15 +182,23 @@ function Timeline() {
                     .sort((a, b) => (b.month || 0) - (a.month || 0))
                     .map(item => (
                       <div key={item.id} className="timeline-item">
-                        <div className="timeline-item-icon">
-                          {getTypeIcon(item.type)}
+                        <div className="timeline-thumb">
+                          {item.thumbnail ? (
+                            <img src={item.thumbnail} alt={`${item.title} preview`} loading="lazy" />
+                          ) : (
+                            <span className="timeline-thumb-placeholder">{getTypeIcon(item.type)}</span>
+                          )}
                         </div>
                         <div className="timeline-item-content">
                           <div className="timeline-item-header">
-                            <h3 className="timeline-item-title">{item.title}</h3>
-                            <span className="timeline-item-date">
-                              {item.month ? `${months[item.month - 1]} ` : ''}{item.year}
-                            </span>
+                            <div className="timeline-item-icon">{getTypeIcon(item.type)}</div>
+                            <div className="timeline-item-meta">
+                              <h3 className="timeline-item-title">{item.title}</h3>
+                              <span className="timeline-item-date">
+                                {item.month ? `${months[item.month - 1]} ` : ''}
+                                {item.year}
+                              </span>
+                            </div>
                           </div>
                           {item.description && (
                             <p className="timeline-item-description">{item.description}</p>

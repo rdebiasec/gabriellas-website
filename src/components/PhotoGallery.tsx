@@ -194,8 +194,10 @@ function PhotoGallery() {
 
                 <div className="lightbox-info">
                   <h3>{selectedPhoto.title}</h3>
-                  {selectedPhoto.date && <p>{selectedPhoto.date}</p>}
-                  <span className="lightbox-category">{selectedPhoto.category}</span>
+                  <div className="lightbox-tags">
+                    {selectedPhoto.date && <span className="lightbox-tag">{selectedPhoto.date}</span>}
+                    <span className="lightbox-tag">{selectedPhoto.category}</span>
+                  </div>
                 </div>
 
                 <div className="lightbox-actions">

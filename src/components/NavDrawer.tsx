@@ -27,8 +27,15 @@ function NavDrawer({ isOpen, onClose, navItems, activeTab, onNavigate }: NavDraw
       <div className="drawer-backdrop" onClick={onClose} />
       <div className="drawer-panel" role="dialog" aria-modal="true">
         <button className="drawer-close" onClick={onClose} aria-label="Close menu">
-          <span />
-          <span />
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M8 5L16 12L8 19"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
         <ul className="drawer-nav">
           {navItems.map((item) => (
@@ -37,7 +44,7 @@ function NavDrawer({ isOpen, onClose, navItems, activeTab, onNavigate }: NavDraw
                 className={`drawer-link ${activeTab === item.id ? 'active' : ''}`}
                 onClick={() => onNavigate(item.id)}
               >
-                {item.label}
+                <span className="drawer-link-label">{item.label}</span>
               </button>
             </li>
           ))}
