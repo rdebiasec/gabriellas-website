@@ -121,7 +121,8 @@ To streamline daily deployments, use the helper script in `scripts/push.sh`:
 
 1. Make it executable (one-time): `chmod +x scripts/push.sh`
 2. Run `./scripts/push.sh`
-3. When prompted, provide your commit message and Personal Access Token (PAT). The script stages all changes, creates the commit, and pushes `HEAD` to `main` on `https://github.com/rdebiasec/gabriellas-website`.
+   - Optional flags: `-m "Commit message"` and `-t "YOUR_PAT"` let you pass the values inline (otherwise the script will prompt interactively).
+3. The script stages all changes, creates the commit, and pushes `HEAD` to `main` on `https://github.com/rdebiasec/gabriellas-website`.
 
 The PAT is requested every run and isn’t stored anywhere in the repository. Because you paste the token into the terminal, consider clearing your shell history if you share the machine.
 
