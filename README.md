@@ -152,19 +152,6 @@ Main color palette:
 
 Categories are automatically generated from your content. To add predefined categories, update the category arrays in each component.
 
-### Monarch Arrival Animation Toggle
-
-The home hero includes a one-time monarch butterfly overlay defined in `src/components/MonarchField.tsx` + `MonarchField.css` and mounted inside `Hero.tsx`.
-
-- **Temporarily disable**: create (or edit) `.env.local` and set `VITE_ENABLE_MONARCHS=false`, then restart `npm run dev` (or rerun `npm run build`). Any value other than the literal string `false` keeps the animation enabled.
-- **Remove entirely**:
-  1. Delete `src/components/MonarchField.tsx` and `src/components/MonarchField.css`.
-  2. Remove the `import MonarchField from './MonarchField'` line and the `<MonarchField />` element inside `Hero.tsx`.
-  3. Run `npm run build` to ensure the site still compiles cleanly.
-- **Replay for testing**: in the browser console run `localStorage.removeItem('monarch-flight-played')` to reset the one-time animation flag without clearing all storage.
-
-To restore the effect later, reintroduce the files and JSX or flip `VITE_ENABLE_MONARCHS=true`.
-
 ## Project Structure
 
 ```
