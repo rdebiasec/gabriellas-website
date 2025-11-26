@@ -122,8 +122,7 @@
   border-radius: 24px;
   overflow: hidden;
   border: 2px solid rgba(74, 31, 99, 0.2);
-  background: radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.4), transparent 45%),
-    linear-gradient(135deg, rgba(255, 236, 255, 0.95), rgba(206, 177, 238, 0.95));
+  background: #ffffff;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.85),
     0 24px 40px rgba(50, 16, 76, 0.25);
   transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
@@ -141,6 +140,7 @@
   width: 100%;
   padding-top: 110%;
   overflow: hidden;
+  background: transparent;
 }
 
 .photo-wrapper img {
@@ -150,6 +150,10 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  filter: brightness(1.25) contrast(1.05);
+  opacity: 1;
+  z-index: 1;
+  background: #ffffff;
 }
 
 .photo-card:hover .photo-wrapper img {
@@ -160,11 +164,12 @@
   position: absolute;
   inset: auto 0 0;
   padding: 1.25rem;
-  background: linear-gradient(0deg, rgba(5, 6, 15, 0.95), transparent);
+  background: linear-gradient(0deg, rgba(5, 6, 15, 0.5), transparent 60%);
   color: var(--color-text);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  z-index: 2;
 }
 
 .photo-title {
