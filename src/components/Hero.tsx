@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './Hero.css'
+import { fetchWallEntries } from '../api/comments'
 import { useStrings } from '../i18n/LocaleProvider'
 
 type MediaCounts = {
@@ -7,8 +8,6 @@ type MediaCounts = {
   videos: number
   wall: number
 }
-
-const WALL_STORAGE_KEY = 'gabys-wall-messages'
 
 type HeroProps = {
   onNavigate: (tab: 'photos' | 'videos' | 'wall' | 'book') => void
@@ -47,35 +46,19 @@ function Hero({ onNavigate }: HeroProps) {
           wallRes.json(),
         ])
 
-        const normalizeWallEntries = () => {
-          const baseEntries = Array.isArray(wallEntries) ? [...wallEntries] : []
-          if (typeof window !== 'undefined') {
-            const storedRaw = window.localStorage.getItem(WALL_STORAGE_KEY)
-            if (storedRaw) {
-              try {
-                const stored: Array<{ id?: string }> = JSON.parse(storedRaw)
-                const seen = new Set(baseEntries.map((entry) => entry?.id).filter(Boolean))
-                stored.forEach((entry) => {
-                  if (!entry) return
-                  if (entry.id && seen.has(entry.id)) return
-                  baseEntries.push(entry)
-                  if (entry.id) {
-                    seen.add(entry.id)
-                  }
-                })
-              } catch (error) {
-                console.error('Unable to parse stored wall entries', error)
-              }
-            }
-          }
-          return baseEntries.length
+        let wallCount = Array.isArray(wallEntries) ? wallEntries.length : 0
+        try {
+          const liveEntries = await fetchWallEntries()
+          wallCount = Array.isArray(liveEntries) ? liveEntries.length : wallCount
+        } catch (error) {
+          console.warn('Falling back to seed wall count', error)
         }
 
         if (isActive) {
           setCounts({
             photos: Array.isArray(photos) ? photos.length : 0,
             videos: Array.isArray(videos) ? videos.length : 0,
-            wall: normalizeWallEntries(),
+            wall: wallCount,
           })
           setCountsLoaded(true)
         }
