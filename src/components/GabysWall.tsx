@@ -1,14 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createWallEntry, fetchWallEntries, type WallEntry } from '../api/comments'
 import './GabysWall.css'
 
-type WallEntry = {
-  id: string
-  fullName: string
-  message: string
-  createdAt: string
-}
-
-const WALL_STORAGE_KEY = 'gabys-wall-messages'
 const MAX_MESSAGE_LENGTH = 1024
 
 function GabysWall() {
@@ -17,67 +10,40 @@ function GabysWall() {
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  useEffect(() => {
-    let isActive = true
-
-    const hydrateFromStorage = () => {
-      if (typeof window === 'undefined') return null
-      const stored = window.localStorage.getItem(WALL_STORAGE_KEY)
-      return stored ? (JSON.parse(stored) as WallEntry[]) : null
-    }
-
-    const storedEntries = hydrateFromStorage()
-    if (storedEntries && storedEntries.length > 0) {
-      setEntries(storedEntries)
+  const loadEntries = useCallback(async () => {
+    setIsLoading(true)
+    setLoadError(null)
+    try {
+      const data = await fetchWallEntries()
+      setEntries(data)
+    } catch (error) {
+      console.error(error)
+      setLoadError('We could not load the latest notes. Please try again.')
+    } finally {
       setIsLoading(false)
-      return
-    }
-
-    const loadSeedData = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/wall.json`)
-        if (!response.ok) throw new Error('Failed to load wall messages')
-        const data: WallEntry[] = await response.json()
-        if (isActive) {
-          setEntries(data)
-        }
-      } catch (error) {
-        console.error(error)
-        if (isActive) {
-          setEntries([])
-        }
-      } finally {
-        if (isActive) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    loadSeedData()
-
-    return () => {
-      isActive = false
     }
   }, [])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (entries.length > 0) {
-      window.localStorage.setItem(WALL_STORAGE_KEY, JSON.stringify(entries))
-    }
-  }, [entries])
+    void loadEntries()
+  }, [loadEntries])
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setStatus(null)
 
-    if (!fullName.trim() || !message.trim()) {
+    const trimmedName = fullName.trim()
+    const trimmedMessage = message.trim()
+
+    if (!trimmedName || !trimmedMessage) {
       setStatus({ type: 'error', text: 'Please share both your full name and a message.' })
       return
     }
 
-    if (message.length > MAX_MESSAGE_LENGTH) {
+    if (trimmedMessage.length > MAX_MESSAGE_LENGTH) {
       setStatus({
         type: 'error',
         text: `Messages are limited to ${MAX_MESSAGE_LENGTH} characters.`,
@@ -85,17 +51,30 @@ function GabysWall() {
       return
     }
 
-    const newEntry: WallEntry = {
-      id: crypto.randomUUID(),
-      fullName: fullName.trim(),
-      message: message.trim(),
-      createdAt: new Date().toISOString(),
-    }
+    setIsSubmitting(true)
 
-    setEntries((prev) => [newEntry, ...prev])
-    setFullName('')
-    setMessage('')
-    setStatus({ type: 'success', text: 'Your note has been added to Gaby’s Wall.' })
+    try {
+      const created = await createWallEntry({ fullName: trimmedName, message: trimmedMessage })
+      const normalizedEntry: WallEntry = {
+        id: created?.id ?? crypto.randomUUID(),
+        fullName: created?.fullName ?? trimmedName,
+        message: created?.message ?? trimmedMessage,
+        createdAt: created?.createdAt ?? new Date().toISOString(),
+      }
+
+      setEntries((prev) => [normalizedEntry, ...prev])
+      setFullName('')
+      setMessage('')
+      setStatus({ type: 'success', text: "Your note has been added to Gaby's Wall." })
+    } catch (error) {
+      console.error(error)
+      setStatus({
+        type: 'error',
+        text: 'We could not post your note right now. Please try again shortly.',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const downloadEntries = () => {
@@ -116,8 +95,8 @@ function GabysWall() {
         <p className="kicker">Gaby&apos;s Wall</p>
         <h2 className="section-title">Messages of love from around the world</h2>
         <p className="section-description">
-          Share a note that celebrates Gabriella&apos;s joyful spirit. Entries stay in your browser,
-          and you can download them as a JSON file to back up in the repository so nothing is lost.
+          Share a note that celebrates Gabriella&apos;s joyful spirit. Messages are stored securely
+          via our memorial database, and you can download them as a JSON file to keep an archive.
         </p>
       </div>
 
@@ -156,15 +135,17 @@ function GabysWall() {
           )}
 
           <div className="form-actions">
-            <button type="submit">Post to Gaby&apos;s Wall</button>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Sharing note...' : "Post to Gaby's Wall"}
+            </button>
             <button type="button" className="secondary" onClick={downloadEntries} disabled={entries.length === 0}>
               Download entries
             </button>
           </div>
 
           <p className="backup-note">
-            After downloading, upload the JSON file to `public/data/wall.json` in GitHub so the notes
-            stay permanently, and consider saving a copy elsewhere for backup.
+            Downloaded notes are great for keeping a personal backup or archiving them in the
+            repository whenever you&apos;d like a snapshot in version control.
           </p>
         </form>
 
@@ -176,6 +157,13 @@ function GabysWall() {
 
           {isLoading ? (
             <p className="loading">Loading heartfelt notes...</p>
+          ) : loadError ? (
+            <div className="load-error">
+              <p>{loadError}</p>
+              <button type="button" onClick={() => void loadEntries()}>
+                Try again
+              </button>
+            </div>
           ) : newestEntries.length === 0 ? (
             <p className="empty">Be the first to leave a message for Gabriella.</p>
           ) : (

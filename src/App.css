@@ -98,28 +98,30 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.65rem;
-  padding: 0.9rem 1.25rem 1.1rem;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 1.25rem;
+  padding: 1rem 1.75rem;
   border-radius: 24px;
   background: radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.4), transparent 50%),
     linear-gradient(135deg, rgba(245, 214, 255, 0.95), rgba(210, 180, 255, 0.9));
   border: 1.5px solid rgba(76, 36, 107, 0.45);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.9),
     0 18px 32px rgba(49, 16, 71, 0.25);
-  text-align: center;
-  min-width: 220px;
-  width: min(260px, 100%);
+  min-width: 330px;
+  width: clamp(340px, 55%, 680px);
 }
 
 .hamburger-tagline {
-  font-size: 0.85rem;
-  letter-spacing: 0.28em;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #371446;
   font-weight: 700;
   line-height: 1.3;
+  flex: 1;
+  display: block;
+  text-align: left;
 }
 
 .hamburger {
@@ -138,6 +140,8 @@
   cursor: pointer;
   transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease;
   box-shadow: 0 18px 40px rgba(175, 132, 210, 0.35);
+  flex-shrink: 0;
+  order: -1;
 }
 
 .hamburger span {
@@ -147,19 +151,6 @@
   border-radius: 999px;
   background: #f2dffb;
   box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.4) inset;
-}
-
-.hamburger::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('/images/butterflies.png');
-  background-size: 220px;
-  background-repeat: repeat;
-  mix-blend-mode: screen;
-  opacity: 0.85;
-  filter: saturate(1.15);
-  pointer-events: none;
 }
 
 .hamburger:hover {
@@ -185,7 +176,7 @@
 
 .menu-hint {
   position: absolute;
-  right: 70px;
+  right: 0;
   top: -8px;
   background: #fef4ff;
   color: #5b2f73;
@@ -274,5 +265,15 @@
 @media (max-width: 767px) {
   .header-inner {
     justify-content: center;
+  }
+
+  .hamburger-wrapper {
+    flex-direction: column;
+    width: 100%;
+    min-width: unset;
+  }
+
+  .hamburger {
+    order: 0;
   }
 }

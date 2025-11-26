@@ -71,7 +71,6 @@ function App() {
               ))}
             </nav>
             <div className="hamburger-wrapper">
-              <span className="hamburger-tagline">CELEBRATING GABRIELLA&apos;S LIFE.</span>
               <button
                 className={`hamburger ${showMenuHint ? 'pulsing' : ''}`}
                 aria-label="Open menu"
@@ -81,6 +80,7 @@ function App() {
                 <span />
                 <span />
               </button>
+              <span className="hamburger-tagline">CELEBRATING GABRIELLA&apos;S LIFE.</span>
               {showMenuHint && (
                 <div className="menu-hint" role="status">
                   <p>Tap here to browse photos, videos, her timeline, wall, and keepsake book.</p>
