@@ -59,10 +59,6 @@ function App() {
       <div className="app-content">
         <header className="header">
           <div className="header-inner">
-            <div className="brand">
-              <span className="brand-pill">Celebrating Gabriella</span>
-              <h1 className="site-title">Gaby&apos;s Website</h1>
-            </div>
             <nav className="nav desktop-nav">
               {navItems.map((item) => (
                 <button
@@ -75,6 +71,7 @@ function App() {
               ))}
             </nav>
             <div className="hamburger-wrapper">
+              <span className="hamburger-tagline">CELEBRATING GABRIELLA&apos;S LIFE.</span>
               <button
                 className={`hamburger ${showMenuHint ? 'pulsing' : ''}`}
                 aria-label="Open menu"
