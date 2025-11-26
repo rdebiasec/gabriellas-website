@@ -10,13 +10,17 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$REPO_ROOT"
 
-# Get commit message from argument or prompt
-if [[ -n "${1:-}" ]]; then
-  COMMIT_MESSAGE="$1"
-else
-  read -rp "📝 Enter commit message (or press Enter for default): " COMMIT_MESSAGE
-  COMMIT_MESSAGE="${COMMIT_MESSAGE:-Update from Cursor}"
+# Get commit message from argument
+if [[ -z "${1:-}" ]]; then
+  echo "❌ Commit message is required."
+  echo ""
+  echo "Usage: ./scripts/deploy.sh \"Your commit message\""
+  echo ""
+  echo "Or from Cursor, say: \"deploy with message: your description here\""
+  exit 1
 fi
+
+COMMIT_MESSAGE="$1"
 
 echo "🚀 Deploying to GitHub Pages..."
 echo "📝 Commit message: $COMMIT_MESSAGE"
