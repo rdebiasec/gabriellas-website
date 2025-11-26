@@ -7,17 +7,21 @@ import Timeline from './components/Timeline'
 import GabysWall from './components/GabysWall'
 import GabysBook from './components/GabysBook'
 import NavDrawer from './components/NavDrawer'
+import { useLocale, useStrings } from './i18n/LocaleProvider'
 
 type Tab = 'home' | 'timeline' | 'photos' | 'videos' | 'wall' | 'book'
 
 function App() {
+  const strings = useStrings()
+  const { locale, setLocale } = useLocale()
+
   const navItems: { id: Tab; label: string }[] = [
-    { id: 'home', label: 'Home' },
-    { id: 'timeline', label: 'Timeline' },
-    { id: 'photos', label: 'Photos' },
-    { id: 'videos', label: 'Videos' },
-    { id: 'wall', label: 'Wall' },
-    { id: 'book', label: 'Book' },
+    { id: 'home', label: strings.nav.home },
+    { id: 'timeline', label: strings.nav.timeline },
+    { id: 'photos', label: strings.nav.photos },
+    { id: 'videos', label: strings.nav.videos },
+    { id: 'wall', label: strings.nav.wall },
+    { id: 'book', label: strings.nav.book },
   ]
 
   const [activeTab, setActiveTab] = useState<Tab>('home')
@@ -71,10 +75,10 @@ function App() {
               ))}
             </nav>
             <div className="hamburger-wrapper">
-              <span className="hamburger-tagline">CELEBRATING GABRIELLA&apos;S LIFE.</span>
+              <span className="hamburger-tagline">{strings.header.tagline}</span>
               <button
                 className={`hamburger ${showMenuHint ? 'pulsing' : ''}`}
-                aria-label="Open menu"
+                aria-label={strings.header.openMenuAria}
                 onClick={openDrawer}
               >
                 <span />
@@ -83,12 +87,33 @@ function App() {
               </button>
               {showMenuHint && (
                 <div className="menu-hint" role="status">
-                  <p>Tap here to browse photos, videos, her timeline, wall, and keepsake book.</p>
+                  <p>{strings.header.menuHint}</p>
                   <button type="button" onClick={() => setShowMenuHint(false)}>
-                    Got it
+                    {strings.header.menuHintButton}
                   </button>
                 </div>
               )}
+            </div>
+            <div className="language-toggle" role="group" aria-label={strings.languageToggle.ariaLabel}>
+              <button
+                type="button"
+                className={locale === 'es' ? 'active' : ''}
+                aria-pressed={locale === 'es'}
+                onClick={() => setLocale('es')}
+                title={strings.languageToggle.switchToSpanish}
+              >
+                {strings.languageToggle.esLabel}
+              </button>
+              <span className="language-toggle-divider">|</span>
+              <button
+                type="button"
+                className={locale === 'en' ? 'active' : ''}
+                aria-pressed={locale === 'en'}
+                onClick={() => setLocale('en')}
+                title={strings.languageToggle.switchToEnglish}
+              >
+                {strings.languageToggle.enLabel}
+              </button>
             </div>
           </div>
         </header>
@@ -111,7 +136,7 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p className="footer-message">Forever in our hearts ❤️</p>
+          <p className="footer-message">{strings.footer.message}</p>
         </footer>
       </div>
 

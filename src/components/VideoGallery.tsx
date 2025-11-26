@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import './VideoGallery.css'
+import { useLocale, useStrings } from '../i18n/LocaleProvider'
+import { localizeVideo, translateCategoryKey, type LocalizedVideo } from '../i18n/mediaTranslations'
 
 interface Video {
   id: number
@@ -16,7 +18,9 @@ function VideoGallery() {
   const [videosData, setVideosData] = useState<Video[]>([])
   const [playingVideo, setPlayingVideo] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const { locale } = useLocale()
+  const strings = useStrings()
 
   // Load videos from JSON file on component mount
   useEffect(() => {
@@ -32,20 +36,30 @@ function VideoGallery() {
       })
   }, [])
 
+  const localizedVideos = useMemo<LocalizedVideo<Video>[]>(() => videosData.map((video) => localizeVideo(video, locale)), [videosData, locale])
+
   const categories = useMemo(() => {
-    return ['All', ...Array.from(new Set(videosData.map(v => v.category)))]
-  }, [videosData])
+    const uniqueKeys = Array.from(new Set(localizedVideos.map((video) => video.categoryKey)))
+    return [
+      { key: 'all', label: strings.filters.all },
+      ...uniqueKeys.map((key) => ({
+        key,
+        label: translateCategoryKey(key, locale),
+      })),
+    ]
+  }, [localizedVideos, locale, strings.filters.all])
 
   const filteredVideos = useMemo(() => {
-    return videosData.filter(video => {
-      const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           video.description.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCategory = selectedCategory === 'All' || video.category === selectedCategory
+    return localizedVideos.filter(video => {
+      const matchesSearch =
+        video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        video.description.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesCategory = selectedCategory === 'all' || video.categoryKey === selectedCategory
       return matchesSearch && matchesCategory
     })
-  }, [videosData, searchQuery, selectedCategory])
+  }, [localizedVideos, searchQuery, selectedCategory])
 
-  const handleDownload = (video: Video) => {
+  const handleDownload = (video: LocalizedVideo<Video>) => {
     const link = document.createElement('a')
     link.href = video.videoUrl
     link.download = `${video.title.replace(/\s+/g, '_')}.mp4`
@@ -72,16 +86,14 @@ function VideoGallery() {
 
   return (
     <div className="video-gallery">
-      <h2 className="section-title">Video Gallery</h2>
-      <p className="section-description">
-        Videos that capture special moments and memories
-      </p>
+      <h2 className="section-title">{strings.videos.title}</h2>
+      <p className="section-description">{strings.videos.description}</p>
 
       <div className="gallery-controls">
         <div className="search-container">
           <input
             type="text"
-            placeholder="Search videos..."
+              placeholder={strings.videos.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -89,13 +101,13 @@ function VideoGallery() {
         </div>
 
         <div className="category-filters">
-          {categories.map(cat => (
+            {categories.map(cat => (
             <button
-              key={cat}
-              className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
+                key={cat.key}
+                className={`category-button ${selectedCategory === cat.key ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat.key)}
             >
-              {cat}
+                {cat.label}
             </button>
           ))}
         </div>
@@ -103,7 +115,7 @@ function VideoGallery() {
 
       {filteredVideos.length === 0 ? (
         <div className="no-results">
-          <p>No videos found matching your search.</p>
+          <p>{strings.videos.noResults}</p>
         </div>
       ) : (
         <div className="videos-grid">
@@ -119,7 +131,7 @@ function VideoGallery() {
                     onEnded={() => setPlayingVideo(null)}
                   >
                     <source src={video.videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
+                    {strings.videos.unsupported}
                   </video>
                 ) : (
                   <>
@@ -131,7 +143,7 @@ function VideoGallery() {
                     <button 
                       className="play-button"
                       onClick={() => setPlayingVideo(video.id)}
-                      aria-label={`Play ${video.title}`}
+                      aria-label={strings.videos.playLabel(video.title)}
                     >
                     <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
                       <circle cx="32" cy="32" r="32" fill="rgba(142, 97, 171, 0.9)"/>
@@ -145,7 +157,7 @@ function VideoGallery() {
                 <h3 className="video-title">{video.title}</h3>
                 <div className="video-meta">
                   {video.date && <span className="video-date">{video.date}</span>}
-                  <span className="video-category">{video.category}</span>
+                    <span className="video-category">{translateCategoryKey(video.categoryKey, locale)}</span>
                 </div>
                 <div className="video-actions">
                   {playingVideo === video.id && (
@@ -154,13 +166,13 @@ function VideoGallery() {
                         className="action-button"
                         onClick={() => handleFullscreen(video.id)}
                       >
-                        ⛶ Fullscreen
+                          {strings.videos.fullscreen}
                       </button>
                       <button 
                         className="action-button"
                         onClick={() => handleDownload(video)}
                       >
-                        ⬇ Download
+                          {strings.videos.download}
                       </button>
                     </>
                   )}

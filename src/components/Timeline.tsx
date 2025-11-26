@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import './Timeline.css'
+import { useLocale, useStrings } from '../i18n/LocaleProvider'
+import { localizePhoto, localizeVideo, translateCategoryKey } from '../i18n/mediaTranslations'
 
 interface TimelineItem {
   id: number
@@ -10,7 +12,8 @@ interface TimelineItem {
   month?: number
   description?: string
   thumbnail?: string
-  category: string
+  categoryKey: string
+  categoryLabel: string
 }
 
 type PhotoEntry = {
@@ -37,7 +40,9 @@ function Timeline() {
   const [photos, setPhotos] = useState<PhotoEntry[]>([])
   const [videos, setVideos] = useState<VideoEntry[]>([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const { locale } = useLocale()
+  const strings = useStrings()
 
   const resolveAssetUrl = (path?: string) => {
     if (!path) return undefined
@@ -65,41 +70,69 @@ function Timeline() {
 
   const timelineItems: TimelineItem[] = useMemo(() => {
     const items: TimelineItem[] = [
-      ...photos.map(photo => ({
-        id: photo.id,
-        type: 'photo' as const,
-        title: photo.title,
-        date: photo.date || '',
-        year: photo.year,
-        month: 6, // Default month - you can add month to JSON if needed
-        description: photo.alt,
-        thumbnail: resolveAssetUrl(photo.src),
-        category: photo.category
-      })),
-      ...videos.map(video => ({
-        id: video.id + 100,
-        type: 'video' as const,
-        title: video.title,
-        date: video.date || '',
-        year: video.year,
-        month: 6,
-        description: video.description,
-        thumbnail: resolveAssetUrl(video.thumbnail),
-        category: video.category
-      }))
+      ...photos.map(photo => {
+        const localized = localizePhoto(
+          {
+            ...photo,
+            alt: photo.alt ?? '',
+            src: photo.src ?? '',
+          },
+          locale
+        )
+        return {
+          id: photo.id,
+          type: 'photo' as const,
+          title: localized.title,
+          date: photo.date || '',
+          year: photo.year,
+          month: 6,
+          description: localized.alt,
+          thumbnail: resolveAssetUrl(photo.src),
+          categoryKey: localized.categoryKey,
+          categoryLabel: translateCategoryKey(localized.categoryKey, locale),
+        }
+      }),
+      ...videos.map(video => {
+        const localized = localizeVideo(
+          {
+            ...video,
+            description: video.description ?? '',
+          },
+          locale
+        )
+        return {
+          id: video.id + 100,
+          type: 'video' as const,
+          title: localized.title,
+          date: video.date || '',
+          year: video.year,
+          month: 6,
+          description: localized.description,
+          thumbnail: resolveAssetUrl(video.thumbnail),
+          categoryKey: localized.categoryKey,
+          categoryLabel: translateCategoryKey(localized.categoryKey, locale),
+        }
+      }),
     ]
     return items
-  }, [photos, videos])
+  }, [photos, videos, locale])
 
   const categories = useMemo(() => {
-    return ['All', ...Array.from(new Set(timelineItems.map(item => item.category)))]
-  }, [timelineItems])
+    const uniqueKeys = Array.from(new Set(timelineItems.map(item => item.categoryKey)))
+    return [
+      { key: 'all', label: strings.filters.all },
+      ...uniqueKeys.map(key => ({
+        key,
+        label: translateCategoryKey(key, locale),
+      })),
+    ]
+  }, [timelineItems, locale, strings.filters.all])
 
   const filteredItems = useMemo(() => {
     return timelineItems.filter(item => {
       const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            item.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory
+      const matchesCategory = selectedCategory === 'all' || item.categoryKey === selectedCategory
       return matchesSearch && matchesCategory
     }).sort((a, b) => {
       if (a.year !== b.year) return b.year - a.year
@@ -118,7 +151,9 @@ function Timeline() {
     return groups
   }, [filteredItems])
 
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const monthFormatter = useMemo(() => {
+    return new Intl.DateTimeFormat(locale === 'es' ? 'es-ES' : 'en-US', { month: 'short' })
+  }, [locale])
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -133,16 +168,14 @@ function Timeline() {
 
   return (
     <div className="timeline">
-      <h2 className="section-title">Timeline</h2>
-      <p className="section-description">
-        A chronological journey through memories
-      </p>
+      <h2 className="section-title">{strings.timeline.title}</h2>
+      <p className="section-description">{strings.timeline.description}</p>
 
       <div className="timeline-controls">
         <div className="search-container">
           <input
             type="text"
-            placeholder="Search timeline..."
+            placeholder={strings.timeline.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -152,11 +185,11 @@ function Timeline() {
         <div className="category-filters">
           {categories.map(cat => (
             <button
-              key={cat}
-              className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
+              key={cat.key}
+              className={`category-button ${selectedCategory === cat.key ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.key)}
             >
-              {cat}
+              {cat.label}
             </button>
           ))}
         </div>
@@ -164,7 +197,7 @@ function Timeline() {
 
       {Object.keys(groupedByYear).length === 0 ? (
         <div className="no-results">
-          <p>No items found matching your search.</p>
+          <p>{strings.timeline.noResults}</p>
         </div>
       ) : (
         <div className="timeline-container">
@@ -195,7 +228,7 @@ function Timeline() {
                             <div className="timeline-item-meta">
                               <h3 className="timeline-item-title">{item.title}</h3>
                               <span className="timeline-item-date">
-                                {item.month ? `${months[item.month - 1]} ` : ''}
+                                {item.month ? `${monthFormatter.format(new Date(2020, (item.month ?? 1) - 1, 1))} ` : ''}
                                 {item.year}
                               </span>
                             </div>
@@ -203,7 +236,7 @@ function Timeline() {
                           {item.description && (
                             <p className="timeline-item-description">{item.description}</p>
                           )}
-                          <span className="timeline-item-category">{item.category}</span>
+                          <span className="timeline-item-category">{item.categoryLabel}</span>
                         </div>
                       </div>
                     ))}

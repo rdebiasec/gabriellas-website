@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import './PhotoGallery.css'
+import { useLocale, useStrings } from '../i18n/LocaleProvider'
+import { localizePhoto, translateCategoryKey, type LocalizedPhoto } from '../i18n/mediaTranslations'
 
 export interface Photo {
   id: number
@@ -16,11 +18,13 @@ export interface Photo {
 
 function PhotoGallery() {
   const [photosData, setPhotosData] = useState<Photo[]>([])
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
+  const [selectedPhotoId, setSelectedPhotoId] = useState<number | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [selectedCategory, setSelectedCategory] = useState('all')
   const [isSlideshow, setIsSlideshow] = useState(false)
+  const { locale } = useLocale()
+  const strings = useStrings()
 
   // Load photos from JSON file on component mount
   useEffect(() => {
@@ -37,20 +41,37 @@ function PhotoGallery() {
       })
   }, [])
 
+  const localizedPhotos = useMemo<LocalizedPhoto<Photo>[]>(() => {
+    return photosData.map((photo) => localizePhoto(photo, locale))
+  }, [photosData, locale])
+
+  const selectedPhoto = useMemo(() => {
+    if (selectedPhotoId == null) return null
+    return localizedPhotos.find((photo) => photo.id === selectedPhotoId) ?? null
+  }, [localizedPhotos, selectedPhotoId])
+
   const categories = useMemo(() => {
-    return ['All', ...Array.from(new Set(photosData.map(p => p.category)))]
-  }, [photosData])
+    const uniqueKeys = Array.from(new Set(localizedPhotos.map((p) => p.categoryKey)))
+    return [
+      { key: 'all', label: strings.filters.all },
+      ...uniqueKeys.map((key) => ({
+        key,
+        label: translateCategoryKey(key, locale),
+      })),
+    ]
+  }, [localizedPhotos, locale, strings.filters.all])
 
   const filteredPhotos = useMemo(() => {
-    return photosData.filter(photo => {
-      const matchesSearch = photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           photo.alt.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCategory = selectedCategory === 'All' || photo.category === selectedCategory
+    return localizedPhotos.filter(photo => {
+      const matchesSearch =
+        photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        photo.alt.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesCategory = selectedCategory === 'all' || photo.categoryKey === selectedCategory
       return matchesSearch && matchesCategory
     })
-  }, [photosData, searchQuery, selectedCategory])
+  }, [localizedPhotos, searchQuery, selectedCategory])
 
-  const handleDownload = (photo: Photo) => {
+  const handleDownload = (photo: LocalizedPhoto<Photo>) => {
     const link = document.createElement('a')
     link.href = photo.src
     link.download = `${photo.title.replace(/\s+/g, '_')}.jpg`
@@ -60,41 +81,43 @@ function PhotoGallery() {
   }
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % filteredPhotos.length)
-    setSelectedPhoto(filteredPhotos[(currentIndex + 1) % filteredPhotos.length])
+    if (filteredPhotos.length === 0) return
+    const nextIndex = (currentIndex + 1) % filteredPhotos.length
+    setCurrentIndex(nextIndex)
+    setSelectedPhotoId(filteredPhotos[nextIndex].id)
   }
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length)
-    setSelectedPhoto(filteredPhotos[(currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length])
+    if (filteredPhotos.length === 0) return
+    const prevIndex = (currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length
+    setCurrentIndex(prevIndex)
+    setSelectedPhotoId(filteredPhotos[prevIndex].id)
   }
 
-  const openPhoto = (photo: Photo) => {
+  const openPhoto = (photo: LocalizedPhoto<Photo>) => {
     const index = filteredPhotos.findIndex(p => p.id === photo.id)
     setCurrentIndex(index)
-    setSelectedPhoto(photo)
+    setSelectedPhotoId(photo.id)
   }
 
   const startSlideshow = () => {
     if (filteredPhotos.length === 0) return
     setIsSlideshow(true)
-    setSelectedPhoto(filteredPhotos[0])
+    setSelectedPhotoId(filteredPhotos[0].id)
     setCurrentIndex(0)
   }
 
   return (
     <div className="photo-gallery">
-      <h2 className="section-title">Photo Gallery</h2>
-      <p className="section-description">
-        A collection of beautiful moments captured in time
-      </p>
+      <h2 className="section-title">{strings.photos.title}</h2>
+      <p className="section-description">{strings.photos.description}</p>
 
       <div className="gallery-controls">
         <div className="row">
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search photos..."
+              placeholder={strings.photos.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
@@ -104,11 +127,11 @@ function PhotoGallery() {
           <div className="category-filters">
             {categories.map(cat => (
               <button
-                key={cat}
-                className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.key}
+                className={`category-button ${selectedCategory === cat.key ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat.key)}
               >
-                {cat}
+                {cat.label}
               </button>
             ))}
           </div>
@@ -116,14 +139,14 @@ function PhotoGallery() {
 
         {filteredPhotos.length > 0 && (
           <button className="slideshow-button" onClick={startSlideshow}>
-            ▶ Slideshow
+            {strings.photos.slideshowStart}
           </button>
         )}
       </div>
 
       {filteredPhotos.length === 0 ? (
         <div className="no-results">
-          <p>No photos found matching your search.</p>
+          <p>{strings.photos.noResults}</p>
         </div>
       ) : (
         <>
@@ -143,7 +166,7 @@ function PhotoGallery() {
                   <div className="photo-overlay">
                     <h3 className="photo-title">{photo.title}</h3>
                     {photo.date && <span className="photo-date">{photo.date}</span>}
-                    <span className="photo-category">{photo.category}</span>
+                    <span className="photo-category">{translateCategoryKey(photo.categoryKey, locale)}</span>
                   </div>
                 </div>
               </div>
@@ -153,19 +176,19 @@ function PhotoGallery() {
           {selectedPhoto && (
             <div 
               className="lightbox"
-              onClick={() => {
-                setSelectedPhoto(null)
-                setIsSlideshow(false)
-              }}
+                onClick={() => {
+                  setSelectedPhotoId(null)
+                  setIsSlideshow(false)
+                }}
             >
               <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
                 <button 
                   className="lightbox-close"
                   onClick={() => {
-                    setSelectedPhoto(null)
+                    setSelectedPhotoId(null)
                     setIsSlideshow(false)
                   }}
-                  aria-label="Close"
+                  aria-label={strings.photos.lightboxClose}
                 >
                   ×
                 </button>
@@ -173,7 +196,7 @@ function PhotoGallery() {
                 <button 
                   className="lightbox-nav lightbox-prev"
                   onClick={handlePrev}
-                  aria-label="Previous"
+                  aria-label={strings.photos.lightboxPrev}
                 >
                   ‹
                 </button>
@@ -187,7 +210,7 @@ function PhotoGallery() {
                 <button 
                   className="lightbox-nav lightbox-next"
                   onClick={handleNext}
-                  aria-label="Next"
+                  aria-label={strings.photos.lightboxNext}
                 >
                   ›
                 </button>
@@ -196,7 +219,7 @@ function PhotoGallery() {
                   <h3>{selectedPhoto.title}</h3>
                   <div className="lightbox-tags">
                     {selectedPhoto.date && <span className="lightbox-tag">{selectedPhoto.date}</span>}
-                    <span className="lightbox-tag">{selectedPhoto.category}</span>
+                    <span className="lightbox-tag">{translateCategoryKey(selectedPhoto.categoryKey, locale)}</span>
                   </div>
                 </div>
 
@@ -205,14 +228,14 @@ function PhotoGallery() {
                     className="download-button"
                     onClick={() => handleDownload(selectedPhoto)}
                   >
-                    ⬇ Download
+                    {strings.photos.download}
                   </button>
                   {isSlideshow && (
                     <button 
                       className="stop-slideshow-button"
                       onClick={() => setIsSlideshow(false)}
                     >
-                      ⏸ Stop Slideshow
+                      {strings.photos.slideshowStop}
                     </button>
                   )}
                 </div>

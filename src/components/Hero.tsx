@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './Hero.css'
+import { useStrings } from '../i18n/LocaleProvider'
 
 type MediaCounts = {
   photos: number
@@ -23,6 +24,7 @@ function Hero({ onNavigate }: HeroProps) {
   const [counts, setCounts] = useState<MediaCounts>(defaultCounts)
   const [countsLoaded, setCountsLoaded] = useState(false)
   const heroImage = `${import.meta.env.BASE_URL}images/gabriella-hero.jpg`
+  const strings = useStrings()
 
   useEffect(() => {
     let isActive = true
@@ -98,36 +100,36 @@ function Hero({ onNavigate }: HeroProps) {
     <section className="hero">
       <div className="hero-media-layer">
         <div className="hero-image">
-          <img src={heroImage} alt="Gabriella smiling outdoors" loading="lazy" />
-          <span className="image-pill">Joyful spirit</span>
+          <img src={heroImage} alt={strings.hero.imageAlt} loading="lazy" />
+          <span className="image-pill">{strings.hero.imagePill}</span>
         </div>
       </div>
       <div className="hero-content">
-        <p className="hero-kicker">A luminous soul</p>
+        <p className="hero-kicker">{strings.hero.kicker}</p>
         <h2 className="hero-title">Gabriella</h2>
-        <p className="hero-subtitle">A beautiful life remembered</p>
-        <p className="hero-description">
-          This is a collection of memories, moments, and milestones from Gabriella&apos;s time with us.
-          Every photo, video, and document hums with her bright laughter, the curiosity that led her on new adventures, and the joy she shared so freely.
-          She was a wonderfully happy girl, cherished and missed deeply by everyone who loves her, and this space celebrates that radiant spirit with gratitude and smiles.
-        </p>
+        <p className="hero-subtitle">{strings.hero.subtitle}</p>
+        {strings.hero.paragraphs.map((paragraph, index) => (
+          <p key={`${paragraph}-${index}`} className="hero-description">
+            {paragraph}
+          </p>
+        ))}
         <div className="hero-stats">
           <button className="stat" type="button" onClick={() => onNavigate('photos')}>
             <span className="stat-number">{formatCount(counts.photos)}</span>
-            <span className="stat-label">Photos</span>
+            <span className="stat-label">{strings.hero.stats.photos}</span>
           </button>
           <button className="stat" type="button" onClick={() => onNavigate('videos')}>
             <span className="stat-number">{formatCount(counts.videos)}</span>
-            <span className="stat-label">Videos</span>
+            <span className="stat-label">{strings.hero.stats.videos}</span>
           </button>
           <button className="stat wall-stat" type="button" onClick={() => onNavigate('wall')}>
             <span className="stat-number">{formatCount(counts.wall)}</span>
-            <span className="wall-meta">Comments</span>
-            <span className="stat-label">Wall</span>
+            <span className="wall-meta">{strings.hero.stats.comments}</span>
+            <span className="stat-label">{strings.hero.stats.wall}</span>
           </button>
           <button className="stat" type="button" onClick={() => onNavigate('book')}>
             <span className="stat-number">1</span>
-            <span className="stat-label">Book</span>
+            <span className="stat-label">{strings.hero.stats.book}</span>
           </button>
         </div>
       </div>

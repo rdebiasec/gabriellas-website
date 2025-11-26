@@ -65,6 +65,39 @@
   flex-wrap: wrap;
 }
 
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(76, 36, 107, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 18px rgba(47, 19, 76, 0.15);
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.language-toggle button {
+  background: transparent;
+  border: none;
+  color: #4b1f62;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.language-toggle button.active {
+  color: #29123c;
+  text-decoration: underline;
+}
+
+.language-toggle-divider {
+  color: rgba(43, 12, 57, 0.45);
+}
+
 .nav {
   display: flex;
   gap: 0.75rem;
@@ -98,18 +131,21 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: row;
-  gap: 1.5rem;
-  padding: 1.1rem 2rem;
-  border-radius: 24px;
-  background: radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.4), transparent 50%),
-    linear-gradient(135deg, rgba(245, 214, 255, 0.95), rgba(210, 180, 255, 0.9));
-  border: 1.5px solid rgba(76, 36, 107, 0.45);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 18px 32px rgba(49, 16, 71, 0.25);
+  gap: 1.4rem;
+  padding: 1.2rem 2.25rem;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.65), transparent 55%),
+    linear-gradient(135deg, rgba(255, 248, 255, 0.92), rgba(231, 208, 255, 0.92));
+  border: none;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 20px 34px rgba(96, 51, 125, 0.22);
   min-width: 360px;
-  width: clamp(360px, 60%, 720px);
+  width: clamp(360px, 65%, 760px);
 }
 
 .hamburger-tagline {
@@ -141,6 +177,7 @@
   transition: border 0.3s ease, background 0.3s ease, transform 0.3s ease;
   box-shadow: 0 18px 40px rgba(175, 132, 210, 0.35);
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .hamburger span {
@@ -259,11 +296,19 @@
   .desktop-nav {
     display: flex;
   }
+
+  .header-inner {
+    flex-wrap: nowrap;
+  }
 }
 
 @media (max-width: 767px) {
   .header-inner {
     justify-content: center;
+  }
+
+  .language-toggle {
+    margin: 0 auto;
   }
 
   .hamburger-wrapper {
@@ -276,6 +321,7 @@
 
   .hamburger {
     order: 0;
+    margin-left: 0;
   }
 
   .hamburger-tagline {

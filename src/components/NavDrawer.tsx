@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import './NavDrawer.css'
+import { useStrings } from '../i18n/LocaleProvider'
 
 export type NavItem = {
   id: string
@@ -15,6 +16,7 @@ interface NavDrawerProps {
 }
 
 function NavDrawer({ isOpen, onClose, navItems, activeTab, onNavigate }: NavDrawerProps) {
+  const strings = useStrings()
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => {
@@ -26,7 +28,7 @@ function NavDrawer({ isOpen, onClose, navItems, activeTab, onNavigate }: NavDraw
     <div className={`drawer ${isOpen ? 'open' : ''}`} aria-hidden={!isOpen}>
       <div className="drawer-backdrop" onClick={onClose} />
       <div className="drawer-panel" role="dialog" aria-modal="true">
-        <button className="drawer-close" onClick={onClose} aria-label="Close menu">
+        <button className="drawer-close" onClick={onClose} aria-label={strings.header.closeMenuAria}>
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
             <path
               d="M8 5L16 12L8 19"

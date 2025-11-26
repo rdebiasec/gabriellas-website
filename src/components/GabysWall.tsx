@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createWallEntry, fetchWallEntries, type WallEntry } from '../api/comments'
 import './GabysWall.css'
+import { useStrings } from '../i18n/LocaleProvider'
 
 const MAX_MESSAGE_LENGTH = 1024
 
@@ -12,6 +13,7 @@ function GabysWall() {
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const strings = useStrings()
 
   const loadEntries = useCallback(async () => {
     setIsLoading(true)
@@ -21,11 +23,11 @@ function GabysWall() {
       setEntries(data)
     } catch (error) {
       console.error(error)
-      setLoadError('We could not load the latest notes. Please try again.')
+      setLoadError(strings.wall.feed.error)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [strings.wall.feed.error])
 
   useEffect(() => {
     void loadEntries()
@@ -39,14 +41,14 @@ function GabysWall() {
     const trimmedMessage = message.trim()
 
     if (!trimmedName || !trimmedMessage) {
-      setStatus({ type: 'error', text: 'Please share both your full name and a message.' })
+      setStatus({ type: 'error', text: strings.wall.form.validation.missingFields })
       return
     }
 
     if (trimmedMessage.length > MAX_MESSAGE_LENGTH) {
       setStatus({
         type: 'error',
-        text: `Messages are limited to ${MAX_MESSAGE_LENGTH} characters.`,
+        text: strings.wall.form.validation.messageTooLong(trimmedMessage.length, MAX_MESSAGE_LENGTH),
       })
       return
     }
@@ -65,12 +67,12 @@ function GabysWall() {
       setEntries((prev) => [normalizedEntry, ...prev])
       setFullName('')
       setMessage('')
-      setStatus({ type: 'success', text: "Your note has been added to Gaby's Wall." })
+      setStatus({ type: 'success', text: strings.wall.form.success })
     } catch (error) {
       console.error(error)
       setStatus({
         type: 'error',
-        text: 'We could not post your note right now. Please try again shortly.',
+        text: strings.wall.form.failure,
       })
     } finally {
       setIsSubmitting(false)
@@ -92,39 +94,36 @@ function GabysWall() {
   return (
     <section className="wall" id="gabys-wall">
       <div className="section-heading">
-        <p className="kicker">Gaby&apos;s Wall</p>
-        <h2 className="section-title">Messages of love from around the world</h2>
-        <p className="section-description">
-          Share a note that celebrates Gabriella&apos;s joyful spirit. Messages are stored securely
-          via our memorial database, and you can download them as a JSON file to keep an archive.
-        </p>
+        <p className="kicker">{strings.wall.kicker}</p>
+        <h2 className="section-title">{strings.wall.title}</h2>
+        <p className="section-description">{strings.wall.description}</p>
       </div>
 
       <div className="wall-layout">
         <form className="wall-form" onSubmit={handleSubmit}>
           <label className="form-label">
-            Full name
+            {strings.wall.form.nameLabel}
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Your full name"
+              placeholder={strings.wall.form.namePlaceholder}
               required
             />
           </label>
 
           <label className="form-label">
-            Message
+            {strings.wall.form.messageLabel}
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Write up to 1024 characters..."
+              placeholder={strings.wall.form.messagePlaceholder}
               maxLength={MAX_MESSAGE_LENGTH}
               rows={5}
               required
             />
             <span className="char-count">
-              {message.length}/{MAX_MESSAGE_LENGTH}
+              {strings.wall.form.charCount(message.length, MAX_MESSAGE_LENGTH)}
             </span>
           </label>
 
@@ -136,36 +135,35 @@ function GabysWall() {
 
           <div className="form-actions">
             <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sharing note...' : "Post to Gaby's Wall"}
+              {isSubmitting ? strings.wall.form.submitBusy : strings.wall.form.submitIdle}
             </button>
             <button type="button" className="secondary" onClick={downloadEntries} disabled={entries.length === 0}>
-              Download entries
+              {strings.wall.form.download}
             </button>
           </div>
 
           <p className="backup-note">
-            Downloaded notes are great for keeping a personal backup or archiving them in the
-            repository whenever you&apos;d like a snapshot in version control.
+            {strings.wall.form.backupNote}
           </p>
         </form>
 
         <div className="wall-feed">
           <div className="feed-header">
-            <h3>Recent notes</h3>
-            <span>{entries.length} shared memories</span>
+            <h3>{strings.wall.feed.header}</h3>
+            <span>{strings.wall.feed.count(entries.length)}</span>
           </div>
 
           {isLoading ? (
-            <p className="loading">Loading heartfelt notes...</p>
+            <p className="loading">{strings.wall.feed.loading}</p>
           ) : loadError ? (
             <div className="load-error">
               <p>{loadError}</p>
               <button type="button" onClick={() => void loadEntries()}>
-                Try again
+                {strings.wall.feed.retry}
               </button>
             </div>
           ) : newestEntries.length === 0 ? (
-            <p className="empty">Be the first to leave a message for Gabriella.</p>
+            <p className="empty">{strings.wall.feed.empty}</p>
           ) : (
             <ul className="wall-messages">
               {newestEntries.map((entry) => (
