@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import PhotoGallery from './components/PhotoGallery'
 import VideoGallery from './components/VideoGallery'
@@ -14,6 +15,8 @@ type Tab = 'home' | 'timeline' | 'photos' | 'videos' | 'wall' | 'book'
 function App() {
   const strings = useStrings()
   const { locale, setLocale } = useLocale()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const navItems: { id: Tab; label: string }[] = [
     { id: 'home', label: strings.nav.home },
@@ -24,7 +27,18 @@ function App() {
     { id: 'book', label: strings.nav.book },
   ]
 
-  const [activeTab, setActiveTab] = useState<Tab>('home')
+  // Get active tab from URL hash
+  const getActiveTab = (): Tab => {
+    const path = location.pathname
+    if (path === '/photos') return 'photos'
+    if (path === '/videos') return 'videos'
+    if (path === '/timeline') return 'timeline'
+    if (path === '/wall') return 'wall'
+    if (path === '/book') return 'book'
+    return 'home'
+  }
+
+  const activeTab = getActiveTab()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [showMenuHint, setShowMenuHint] = useState(() => {
     if (typeof window === 'undefined') return false
@@ -48,12 +62,29 @@ function App() {
   }
 
   const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab)
+    const routeMap: Record<Tab, string> = {
+      home: '/',
+      timeline: '/timeline',
+      photos: '/photos',
+      videos: '/videos',
+      wall: '/wall',
+      book: '/book',
+    }
+    navigate(routeMap[tab])
     setIsDrawerOpen(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const navigateToTab = (tab: Tab) => {
-    setActiveTab(tab)
+    const routeMap: Record<Tab, string> = {
+      home: '/',
+      timeline: '/timeline',
+      photos: '/photos',
+      videos: '/videos',
+      wall: '/wall',
+      book: '/book',
+    }
+    navigate(routeMap[tab])
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -124,20 +155,26 @@ function App() {
         </header>
 
         <main className="main-content">
-          {activeTab === 'home' && (
-            <Hero
-              onNavigate={(tab) => {
-                if (tab === 'photos' || tab === 'videos' || tab === 'wall' || tab === 'book') {
-                  navigateToTab(tab)
-                }
-              }}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Hero
+                  onNavigate={(tab) => {
+                    if (tab === 'photos' || tab === 'videos' || tab === 'wall' || tab === 'book') {
+                      navigateToTab(tab)
+                    }
+                  }}
+                />
+              }
             />
-          )}
-          {activeTab === 'timeline' && <Timeline />}
-          {activeTab === 'photos' && <PhotoGallery />}
-          {activeTab === 'videos' && <VideoGallery />}
-          {activeTab === 'wall' && <GabysWall />}
-          {activeTab === 'book' && <GabysBook />}
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/photos" element={<PhotoGallery />} />
+            <Route path="/videos" element={<VideoGallery />} />
+            <Route path="/wall" element={<GabysWall />} />
+            <Route path="/book" element={<GabysBook />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </main>
 
         <footer className="footer">

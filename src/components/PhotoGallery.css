@@ -9,12 +9,14 @@
   font-family: var(--font-heading);
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   letter-spacing: 0.12em;
-  margin-bottom: 0.05rem;
+  margin-top: -3rem;
+  margin-bottom: 0.5rem;
 }
 
 .section-description {
   text-align: center;
   color: var(--color-text-muted);
+  margin-top: 0;
   margin-bottom: 0;
 }
 
@@ -111,7 +113,7 @@
 
 .photos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
   gap: 0.75rem;
 }
 
