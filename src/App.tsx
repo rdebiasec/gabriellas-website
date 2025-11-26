@@ -102,9 +102,11 @@ function App() {
                 onClick={() => setLocale('es')}
                 title={strings.languageToggle.switchToSpanish}
               >
+                <span className="flag" aria-hidden="true">
+                  🇨🇴
+                </span>
                 {strings.languageToggle.esLabel}
               </button>
-              <span className="language-toggle-divider">|</span>
               <button
                 type="button"
                 className={locale === 'en' ? 'active' : ''}
@@ -112,6 +114,9 @@ function App() {
                 onClick={() => setLocale('en')}
                 title={strings.languageToggle.switchToEnglish}
               >
+                <span className="flag" aria-hidden="true">
+                  🇺🇸
+                </span>
                 {strings.languageToggle.enLabel}
               </button>
             </div>
