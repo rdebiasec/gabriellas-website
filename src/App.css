@@ -57,36 +57,36 @@
   justify-content: space-between;
   background: var(--color-card);
   border: 1px solid rgba(139, 116, 195, 0.3);
-  border-radius: 28px;
-  padding: 1rem 1.5rem;
+  border-radius: 24px;
+  padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 3vw, 1.5rem);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-soft);
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .language-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem;
+  gap: 0.3rem;
+  padding: 0.28rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(76, 36, 107, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 18px rgba(47, 19, 76, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 6px 14px rgba(47, 19, 76, 0.12);
 }
 
 .language-toggle button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.35rem 0.7rem;
+  gap: 0.2rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 999px;
   border: none;
-  background: rgba(255, 255, 255, 0.6);
-  color: #341049;
-  font-size: 0.78rem;
+  background: rgba(206, 177, 255, 0.35);
+  color: #35205d;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -95,13 +95,14 @@
 }
 
 .language-toggle button.active {
-  background: linear-gradient(130deg, rgba(250, 200, 255, 0.9), rgba(213, 181, 255, 0.85));
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), 0 6px 14px rgba(64, 25, 92, 0.2);
+  background: linear-gradient(130deg, rgba(136, 98, 193, 0.95), rgba(95, 60, 170, 0.92));
+  color: #fdfbff;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.15), 0 5px 12px rgba(64, 25, 92, 0.25);
   transform: translateY(1px);
 }
 
 .language-toggle button .flag {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .language-toggle-divider {
@@ -143,31 +144,32 @@
   align-items: center;
   justify-content: flex-start;
   flex-direction: row;
-  gap: clamp(1rem, 2vw, 1.5rem);
-  padding: 0.85rem clamp(1.75rem, 3vw, 2.75rem);
-  border-radius: 24px;
+  gap: clamp(0.7rem, 1.5vw, 1rem);
+  padding: clamp(0.55rem, 1.25vw, 0.75rem) clamp(1rem, 3vw, 1.8rem);
+  border-radius: 20px;
   background:
-    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.7), transparent 50%),
-    linear-gradient(130deg, rgba(249, 240, 255, 0.95), rgba(228, 206, 255, 0.9));
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.72), transparent 50%),
+    linear-gradient(128deg, rgba(248, 239, 255, 0.95), rgba(226, 204, 255, 0.9));
   border: none;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 16px 26px rgba(75, 37, 102, 0.2);
-  min-width: 380px;
-  width: clamp(380px, 70%, 820px);
+    0 0 0 1px rgba(255, 255, 255, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 12px 20px rgba(75, 37, 102, 0.15);
+  min-width: 320px;
+  width: min(95%, 780px);
 }
 
 .hamburger-tagline {
-  font-size: clamp(0.8rem, 1.8vw, 1rem);
-  letter-spacing: 0.18em;
+  font-size: clamp(0.78rem, 1.6vw, 0.95rem);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #371446;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
   flex: 1;
   display: block;
   text-align: left;
+  min-width: 0;
 }
 
 .hamburger {
@@ -319,22 +321,5 @@
 
   .language-toggle {
     margin: 0 auto;
-  }
-
-  .hamburger-wrapper {
-    flex-direction: column;
-    width: 100%;
-    min-width: unset;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-  }
-
-  .hamburger {
-    order: 0;
-    margin-left: 0;
-  }
-
-  .hamburger-tagline {
-    text-align: center;
   }
 }
