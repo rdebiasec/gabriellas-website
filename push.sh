@@ -6,16 +6,23 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get repo root using git (more reliable than path manipulation)
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo "$SCRIPT_DIR")"
+PAT_FILE="$REPO_ROOT/.github-pat"
+
 COMMIT_MESSAGE=""
 GITHUB_PAT=""
 
 print_usage() {
   cat <<'EOF'
-Usage: ./scripts/push.sh [-m "commit message"] [-t "github_pat"]
+Usage: ./push.sh [-m "commit message"] [-t "github_pat"]
 
 Flags:
   -m    Commit message (will prompt if omitted)
-  -t    GitHub Personal Access Token (will prompt securely if omitted)
+  -t    GitHub Personal Access Token (uses stored PAT if available, otherwise prompts)
+  
+To store your PAT for future use, run: ./scripts/set-pat.sh
 EOF
 }
 
@@ -49,12 +56,19 @@ if [[ -z "${COMMIT_MESSAGE// }" ]]; then
   done
 fi
 
+# Try to load PAT from file if not provided via flag
 if [[ -z "${GITHUB_PAT// }" ]]; then
-  read -rsp "GitHub Personal Access Token: " GITHUB_PAT
-  echo
-  if [[ -z "${GITHUB_PAT// }" ]]; then
-    echo "❌ Personal Access Token cannot be empty."
-    exit 1
+  if [[ -f "$PAT_FILE" ]]; then
+    GITHUB_PAT="$(cat "$PAT_FILE")"
+    echo "✅ Using stored PAT from .github-pat"
+  else
+    read -rsp "GitHub Personal Access Token (or run ./scripts/set-pat.sh to store it): " GITHUB_PAT
+    echo
+    if [[ -z "${GITHUB_PAT// }" ]]; then
+      echo "❌ Personal Access Token cannot be empty."
+      echo "💡 Tip: Run ./scripts/set-pat.sh to store your PAT for future use."
+      exit 1
+    fi
   fi
 fi
 

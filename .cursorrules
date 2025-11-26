@@ -1,0 +1,85 @@
+# Cursor Rules for Gabriella's Memorial Website
+
+## Repository Information
+- **GitHub Repository**: https://github.com/rdebiasec/gabriellas-website.git
+- **Default Branch**: `main`
+- **Deployment Target**: GitHub Pages (automatic via GitHub Actions)
+
+## Deployment Rules
+
+### Automatic Deployment
+- **Workflow File**: `.github/workflows/deploy.yml`
+- **Trigger**: Automatically deploys on every push to `main` branch
+- **Process**: 
+  1. Builds the React app using Vite
+  2. Deploys to GitHub Pages
+  3. Uses hash-based routing (`#/`) for client-side routing compatibility
+
+### Quick Deployment (Recommended)
+- **Keyword**: Say "deploy" or "push" to trigger deployment
+- **Script**: `./scripts/deploy.sh`
+- **Usage**: 
+  ```bash
+  ./scripts/deploy.sh "Your commit message"
+  ```
+  Or simply:
+  ```bash
+  ./scripts/deploy.sh
+  ```
+  (Uses default message: "Update from Cursor")
+
+### PAT Storage (One-Time Setup)
+- **Store PAT**: `./scripts/set-pat.sh`
+  - Run once to securely store your GitHub PAT
+  - PAT is saved in `.github-pat` (gitignored, never committed)
+  - After setup, you won't need to enter PAT again
+- **Update PAT**: Run `./scripts/set-pat.sh` again to update
+
+### Manual Deployment via Script
+- **Script**: `./push.sh`
+- **Usage**: 
+  ```bash
+  ./push.sh -m "Your commit message"
+  ```
+  - Automatically uses stored PAT if available
+  - Falls back to prompt if PAT not stored
+- **Requirements**: 
+  - GitHub Personal Access Token (PAT) with `repo` permissions
+  - Run `./scripts/set-pat.sh` once to store PAT
+
+### Deployment Checklist
+Before pushing to GitHub:
+1. ✅ Run `npm run build` locally to verify build succeeds
+2. ✅ Test locally with `npm run dev` to ensure no runtime errors
+3. ✅ Check that all routes work correctly (hash-based routing: `#/photos`, `#/videos`, etc.)
+4. ✅ Verify no console errors in browser
+5. ✅ Ensure `vite.config.ts` has `base: '/'` for GitHub Pages compatibility
+
+### Important Configuration
+- **Base Path**: Always use `base: '/'` in `vite.config.ts` (works with custom domain)
+- **Routing**: Uses React Router with `HashRouter` for GitHub Pages compatibility
+- **Build Output**: `dist/` directory (automatically handled by GitHub Actions)
+
+### GitHub Pages Setup
+- **Source**: GitHub Actions (configured in repository Settings → Pages)
+- **Branch**: `gh-pages` (automatically created by GitHub Actions)
+- **Custom Domain**: Supported (if `CNAME` file exists in root or `public/`)
+
+### Code Changes Guidelines
+- Always test locally before pushing
+- Use descriptive commit messages
+- The workflow automatically builds and deploys on push to `main`
+- No manual deployment steps needed after push
+
+### Troubleshooting
+- If deployment fails, check GitHub Actions tab for error logs
+- Verify `package.json` dependencies are up to date
+- Ensure `vite.config.ts` base path is correct
+- Check that all environment variables are set if needed
+
+## File Structure
+- Source code: `src/`
+- Public assets: `public/`
+- Build output: `dist/` (gitignored, generated on build)
+- Workflow: `.github/workflows/deploy.yml`
+
