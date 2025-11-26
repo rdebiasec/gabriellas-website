@@ -17,6 +17,7 @@
 
 ### Quick Deployment (Recommended)
 - **Keyword**: Say "deploy" or "push" to trigger deployment
+- **With message**: Say "deploy with message: your description here"
 - **Script**: `./scripts/deploy.sh`
 - **Usage**: 
   ```bash
@@ -26,7 +27,7 @@
   ```bash
   ./scripts/deploy.sh
   ```
-  (Uses default message: "Update from Cursor")
+  (Will prompt for message, or use default: "Update from Cursor")
 
 ### PAT Storage (One-Time Setup)
 - **Store PAT**: `./scripts/set-pat.sh`
