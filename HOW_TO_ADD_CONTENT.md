@@ -72,20 +72,70 @@ Open `public/data/photos.json` in any text editor and add a new entry:
 
 ## 🎥 Adding Videos
 
-### Step 1: Add the Video File
-1. Put your video in `public/videos/` folder
-   - Example: `public/videos/gabriella-dancing.mp4`
+You can add videos in two ways: **YouTube videos** or **local video files**. Both work the same way in the gallery!
 
-### Step 2: Add a Thumbnail (Optional but Recommended)
-1. Create a thumbnail image (screenshot from the video)
-2. Put it in `public/videos/thumbnails/`
-   - Example: `public/videos/thumbnails/gabriella-dancing-thumb.jpg`
+### Option 1: Adding YouTube Videos
 
-### Step 3: Edit `public/data/videos.json`
+#### Step 1: Get Your YouTube Video ID
+1. Go to your YouTube video (e.g., `https://www.youtube.com/watch?v=VIDEO_ID_HERE`)
+2. Copy the video ID (the part after `v=` in the URL)
+   - Example: If the URL is `https://www.youtube.com/watch?v=dQw4w9WgXcQ`, the video ID is `dQw4w9WgXcQ`
+   - You can also use the short URL format: `https://youtu.be/VIDEO_ID_HERE`
+
+#### Step 2: Edit `public/data/videos.json`
+
+Add an entry like this:
 
 ```json
 {
   "id": 4,
+  "title": "Gabriella Dancing",
+  "description": "Beautiful dance performance",
+  "thumbnail": "",
+  "videoUrl": "https://www.youtube.com/watch?v=YOUR_VIDEO_ID",
+  "youtubeId": "YOUR_VIDEO_ID",
+  "date": "2019",
+  "category": "Family",
+  "year": 2019
+}
+```
+
+**Notes:**
+- `youtubeId` is optional but recommended for clarity
+- `thumbnail` can be left empty (`""`) - YouTube thumbnails are used automatically
+- `videoUrl` can be the full YouTube URL or just the video ID
+- The system will automatically detect YouTube videos and embed them
+
+**Simplified format (just the video ID):**
+```json
+{
+  "id": 4,
+  "title": "Gabriella Dancing",
+  "description": "Beautiful dance performance",
+  "thumbnail": "",
+  "videoUrl": "YOUR_VIDEO_ID",
+  "date": "2019",
+  "category": "Family",
+  "year": 2019
+}
+```
+
+### Option 2: Adding Local Video Files
+
+#### Step 1: Add the Video File
+1. Put your video in `public/videos/` folder
+   - Example: `public/videos/gabriella-dancing.mp4`
+
+#### Step 2: Add a Thumbnail (Optional but Recommended)
+1. Create a thumbnail image (screenshot from the video)
+2. Put it in `public/videos/thumbnails/`
+   - Example: `public/videos/thumbnails/gabriella-dancing-thumb.jpg`
+
+#### Step 3: Edit `public/data/videos.json`
+
+```json
+{
+  "id": 5,
   "title": "Gabriella Dancing",
   "description": "Beautiful dance performance",
   "thumbnail": "/videos/thumbnails/gabriella-dancing-thumb.jpg",
@@ -95,6 +145,11 @@ Open `public/data/photos.json` in any text editor and add a new entry:
   "year": 2019
 }
 ```
+
+**Notes:**
+- `videoUrl` must start with `/videos/` for local files
+- `thumbnail` should start with `/videos/thumbnails/` if you provide one
+- Local videos can be downloaded by visitors
 
 ## 💌 Adding Gaby's Wall Notes
 

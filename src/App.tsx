@@ -7,6 +7,7 @@ import Hero from './components/Hero'
 import Timeline from './components/Timeline'
 import GabysWall from './components/GabysWall'
 import GabysBook from './components/GabysBook'
+import AdminPanel from './components/AdminPanel'
 import NavDrawer from './components/NavDrawer'
 import { useLocale, useStrings } from './i18n/LocaleProvider'
 
@@ -173,6 +174,7 @@ function App() {
             <Route path="/videos" element={<VideoGallery />} />
             <Route path="/wall" element={<GabysWall />} />
             <Route path="/book" element={<GabysBook />} />
+            <Route path="/admin" element={<AdminPanel />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
