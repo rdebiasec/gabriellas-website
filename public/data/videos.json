@@ -73,5 +73,16 @@
     "date": "2010",
     "category": "Family",
     "year": 2023
+  },
+  {
+    "id": 8,
+    "title": "Jaime Duque 2011",
+    "description": "Asado donde Luz Marrina y Paseo Jaime Duque",
+    "thumbnail": "https://i.ytimg.com/vi/v76LH1oSAZg/hqdefault.jpg",
+    "videoUrl": "https://youtu.be/v76LH1oSAZg",
+    "youtubeId": "v76LH1oSAZg",
+    "date": "2011",
+    "category": "Family",
+    "year": 2023
   }
 ]
