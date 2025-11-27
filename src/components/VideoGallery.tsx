@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import './VideoGallery.css'
 import { useLocale, useStrings } from '../i18n/LocaleProvider'
 import { localizeVideo, translateCategoryKey, type LocalizedVideo } from '../i18n/mediaTranslations'
@@ -81,7 +81,8 @@ function getYouTubeVideoId(video: Video): string | null {
 
 function VideoGallery() {
   const [videosData, setVideosData] = useState<Video[]>([])
-  const [playingVideo, setPlayingVideo] = useState<number | null>(null)
+  const [selectedVideoId, setSelectedVideoId] = useState<number | null>(null)
+  const [_currentIndex, setCurrentIndex] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const { locale } = useLocale()
@@ -135,6 +136,11 @@ function VideoGallery() {
     })
   }, [localizedVideos, searchQuery, selectedCategory])
 
+  const selectedVideo = useMemo(() => {
+    if (selectedVideoId == null) return null
+    return filteredVideos.find((video) => video.id === selectedVideoId) ?? null
+  }, [filteredVideos, selectedVideoId])
+
   const handleDownload = (video: LocalizedVideo<Video>) => {
     // Only allow download for local videos, not YouTube
     const videoType = getVideoType(video)
@@ -155,12 +161,58 @@ function VideoGallery() {
     document.body.removeChild(link)
   }
 
+  const handleNext = useCallback(() => {
+    if (filteredVideos.length === 0) return
+    setCurrentIndex(prevIndex => {
+      const nextIndex = (prevIndex + 1) % filteredVideos.length
+      setSelectedVideoId(filteredVideos[nextIndex].id)
+      return nextIndex
+    })
+  }, [filteredVideos])
+
+  const handlePrev = useCallback(() => {
+    if (filteredVideos.length === 0) return
+    setCurrentIndex(prevIndex => {
+      const newPrevIndex = (prevIndex - 1 + filteredVideos.length) % filteredVideos.length
+      setSelectedVideoId(filteredVideos[newPrevIndex].id)
+      return newPrevIndex
+    })
+  }, [filteredVideos])
+
+  const openVideo = (video: LocalizedVideo<Video>) => {
+    const index = filteredVideos.findIndex(v => v.id === video.id)
+    setCurrentIndex(index >= 0 ? index : 0)
+    setSelectedVideoId(video.id)
+  }
+
+  const closeVideo = () => {
+    setSelectedVideoId(null)
+  }
+
+  // Keyboard navigation support
+  useEffect(() => {
+    if (selectedVideoId === null) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeVideo()
+      } else if (e.key === 'ArrowLeft') {
+        handlePrev()
+      } else if (e.key === 'ArrowRight') {
+        handleNext()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedVideoId, handlePrev, handleNext])
+
   const handleFullscreen = (videoId: number, video: LocalizedVideo<Video>) => {
     const videoType = getVideoType(video)
     
     // For YouTube, the iframe handles fullscreen itself
     if (videoType === 'youtube') {
-      const iframe = document.getElementById(`youtube-${videoId}`) as HTMLIFrameElement | null
+      const iframe = document.getElementById(`youtube-lightbox-${videoId}`) as HTMLIFrameElement | null
       if (iframe) {
         // YouTube iframe has built-in fullscreen support via right-click or controls
         // We can't programmatically trigger it due to browser security, but the iframe supports it
@@ -169,7 +221,7 @@ function VideoGallery() {
     }
     
     // For local videos, use the existing fullscreen logic
-    const element = document.getElementById(`video-${videoId}`) as (HTMLVideoElement & {
+    const element = document.getElementById(`video-lightbox-${videoId}`) as (HTMLVideoElement & {
       webkitRequestFullscreen?: () => Promise<void> | void
       mozRequestFullScreen?: () => Promise<void> | void
     }) | null
@@ -218,108 +270,147 @@ function VideoGallery() {
           <p>{strings.videos.noResults}</p>
         </div>
       ) : (
-        <div className="videos-grid">
-          {filteredVideos.map((video) => {
-            const videoType = getVideoType(video)
-            const youtubeId = getYouTubeVideoId(video)
-            const thumbnailUrl = videoType === 'youtube' && youtubeId && (!video.thumbnail || video.thumbnail.includes('youtube.com') || video.thumbnail.includes('youtu.be'))
-              ? getYouTubeThumbnail(youtubeId)
-              : video.thumbnail
-            
-            return (
-              <div key={video.id} className="video-card">
-                <div className="video-wrapper">
-                  {playingVideo === video.id ? (
-                    videoType === 'youtube' && youtubeId ? (
-                      <iframe
-                        id={`youtube-${video.id}`}
-                        className="video-player youtube-player"
-                        src={getYouTubeEmbedUrl(youtubeId)}
-                        title={video.title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        onLoad={() => {
-                          // YouTube iframe doesn't have an onEnded event, so we'll keep it playing
-                          // Users can close it manually or we can add a close button
-                        }}
-                      />
-                    ) : (
-                      <video 
-                        id={`video-${video.id}`}
-                        controls 
-                        autoPlay
-                        className="video-player"
-                        onEnded={() => setPlayingVideo(null)}
-                      >
-                        <source src={video.videoUrl} type="video/mp4" />
-                        {strings.videos.unsupported}
-                      </video>
-                    )
-                  ) : (
-                    <>
-                      <img 
-                        src={thumbnailUrl} 
-                        alt={video.title}
-                        className="video-thumbnail"
-                        onError={(e) => {
-                          // Fallback to YouTube thumbnail if custom thumbnail fails
-                          if (videoType === 'youtube' && youtubeId) {
-                            const target = e.target as HTMLImageElement
-                            target.src = getYouTubeThumbnail(youtubeId, 'default')
-                          }
-                        }}
-                      />
-                      <button 
-                        className="play-button"
-                        onClick={() => setPlayingVideo(video.id)}
-                        aria-label={strings.videos.playLabel(video.title)}
-                      >
-                        <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
-                          <circle cx="32" cy="32" r="32" fill="rgba(142, 97, 171, 0.9)"/>
-                          <path d="M24 20L44 32L24 44V20Z" fill="#f5e6ff"/>
-                        </svg>
-                      </button>
-                    </>
-                  )}
+        <>
+          <div className="videos-grid">
+            {filteredVideos.map((video) => {
+              const videoType = getVideoType(video)
+              const youtubeId = getYouTubeVideoId(video)
+              const thumbnailUrl = videoType === 'youtube' && youtubeId && (!video.thumbnail || video.thumbnail.includes('youtube.com') || video.thumbnail.includes('youtu.be'))
+                ? getYouTubeThumbnail(youtubeId)
+                : video.thumbnail
+              
+              return (
+                <div 
+                  key={video.id} 
+                  className="video-card"
+                  onClick={() => openVideo(video)}
+                >
+                  <div className="video-wrapper">
+                    <img 
+                      src={thumbnailUrl} 
+                      alt={video.title}
+                      className="video-thumbnail"
+                      onError={(e) => {
+                        // Fallback to YouTube thumbnail if custom thumbnail fails
+                        if (videoType === 'youtube' && youtubeId) {
+                          const target = e.target as HTMLImageElement
+                          target.src = getYouTubeThumbnail(youtubeId, 'default')
+                        }
+                      }}
+                    />
+                    <button 
+                      className="play-button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        openVideo(video)
+                      }}
+                      aria-label={strings.videos.playLabel(video.title)}
+                    >
+                      <svg width="80" height="80" viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="32" fill="rgba(142, 97, 171, 0.9)"/>
+                        <path d="M24 20L44 32L24 44V20Z" fill="#f5e6ff"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="video-info">
+                    <h3 className="video-title">{video.title}</h3>
+                    <div className="video-meta">
+                      {video.date && <span className="video-date">{video.date}</span>}
+                      <span className="video-category">{translateCategoryKey(video.categoryKey, locale)}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="video-info">
-                  <h3 className="video-title">{video.title}</h3>
-                  <div className="video-meta">
-                    {video.date && <span className="video-date">{video.date}</span>}
-                    <span className="video-category">{translateCategoryKey(video.categoryKey, locale)}</span>
+              )
+            })}
+          </div>
+
+          {selectedVideo && (
+            <div 
+              className="video-lightbox"
+              onClick={closeVideo}
+            >
+              <div className="video-lightbox-content" onClick={(e) => e.stopPropagation()}>
+                <button 
+                  className="video-lightbox-close"
+                  onClick={closeVideo}
+                  aria-label={strings.photos.lightboxClose}
+                >
+                  ×
+                </button>
+                
+                <button 
+                  className="video-lightbox-nav video-lightbox-prev"
+                  onClick={handlePrev}
+                  aria-label={strings.photos.lightboxPrev}
+                >
+                  ‹
+                </button>
+                
+                {getVideoType(selectedVideo) === 'youtube' && getYouTubeVideoId(selectedVideo) ? (
+                  <div className="video-lightbox-player-wrapper">
+                    <iframe
+                      id={`youtube-lightbox-${selectedVideo.id}`}
+                      className="video-lightbox-player video-lightbox-youtube"
+                      src={getYouTubeEmbedUrl(getYouTubeVideoId(selectedVideo)!)}
+                      title={selectedVideo.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   </div>
-                  <div className="video-actions">
-                    {playingVideo === video.id && (
-                      <>
-                        {videoType === 'local' && (
-                          <button 
-                            className="action-button"
-                            onClick={() => handleFullscreen(video.id, video)}
-                          >
-                            {strings.videos.fullscreen}
-                          </button>
-                        )}
-                        <button 
-                          className="action-button"
-                          onClick={() => handleDownload(video)}
-                        >
-                          {videoType === 'youtube' ? (locale === 'es' ? 'Ver en YouTube' : 'Watch on YouTube') : strings.videos.download}
-                        </button>
-                        <button 
-                          className="action-button"
-                          onClick={() => setPlayingVideo(null)}
-                        >
-                          {strings.common.close}
-                        </button>
-                      </>
-                    )}
+                ) : (
+                  <div className="video-lightbox-player-wrapper">
+                    <video 
+                      id={`video-lightbox-${selectedVideo.id}`}
+                      controls 
+                      autoPlay
+                      className="video-lightbox-player"
+                    >
+                      <source src={selectedVideo.videoUrl} type="video/mp4" />
+                      {strings.videos.unsupported}
+                    </video>
                   </div>
+                )}
+                
+                <button 
+                  className="video-lightbox-nav video-lightbox-next"
+                  onClick={handleNext}
+                  aria-label={strings.photos.lightboxNext}
+                >
+                  ›
+                </button>
+
+                <div className="video-lightbox-info">
+                  <h3>{selectedVideo.title}</h3>
+                  {selectedVideo.description && <p className="video-lightbox-description">{selectedVideo.description}</p>}
+                  <div className="video-lightbox-tags">
+                    {selectedVideo.date && <span className="video-lightbox-tag">{selectedVideo.date}</span>}
+                    <span className="video-lightbox-tag">{translateCategoryKey(selectedVideo.categoryKey, locale)}</span>
+                  </div>
+                </div>
+
+                <div className="video-lightbox-actions">
+                  {getVideoType(selectedVideo) === 'local' && (
+                    <button 
+                      className="video-lightbox-action-button"
+                      onClick={() => handleFullscreen(selectedVideo.id, selectedVideo)}
+                    >
+                      {strings.videos.fullscreen}
+                    </button>
+                  )}
+                  <button 
+                    className="video-lightbox-action-button"
+                    onClick={() => handleDownload(selectedVideo)}
+                  >
+                    {getVideoType(selectedVideo) === 'youtube' 
+                      ? (locale === 'es' ? 'Ver en YouTube' : 'Watch on YouTube') 
+                      : strings.videos.download}
+                  </button>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
